@@ -51,5 +51,3 @@ function ProgressBar({
   );
 }
 
-export type { ProgressTone };
-export default ProgressBar;

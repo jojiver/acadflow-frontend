@@ -26,5 +26,3 @@ export function SkeletonButton({
 
   return <Skeleton className={cn("rounded-lg", heights[size], className)} />;
 }
-
-export default Skeleton;
