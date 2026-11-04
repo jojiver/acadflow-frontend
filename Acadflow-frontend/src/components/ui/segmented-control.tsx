@@ -1,19 +1,14 @@
 import { cn } from "@/lib/cn";
 
-export type SegmentOption<T extends string> = {
-  value: T;
-  label: string;
-};
-
 type SegmentedControlProps<T extends string> = {
   value: T;
-  options: SegmentOption<T>[];
+  options: { value: T; label: string }[];
   onChange: (value: T) => void;
   ariaLabel?: string;
   className?: string;
 };
 
-function SegmentedControl<T extends string>({
+export function SegmentedControl<T extends string>({
   value,
   options,
   onChange,
@@ -24,7 +19,7 @@ function SegmentedControl<T extends string>({
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className={cn("inline-flex rounded-lg bg-slate-100 p-1", className)}
+      className={cn("inline-flex rounded-xl bg-brand-tint p-1", className)}
     >
       {options.map((option) => {
         const active = option.value === value;
@@ -37,10 +32,10 @@ function SegmentedControl<T extends string>({
             aria-selected={active}
             onClick={() => onChange(option.value)}
             className={cn(
-              "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+              "cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
               active
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-surface text-ink shadow-sm"
+                : "text-ink-2 hover:text-ink",
             )}
           >
             {option.label}

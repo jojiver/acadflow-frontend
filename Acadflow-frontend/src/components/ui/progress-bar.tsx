@@ -1,12 +1,12 @@
 import { cn } from "@/lib/cn";
 
-type ProgressTone = "indigo" | "emerald" | "amber" | "rose";
+type ProgressTone = "emerald" | "amber" | "rose" | "slate";
 
 const TONES: Record<ProgressTone, string> = {
-  indigo: "bg-indigo-600",
-  emerald: "bg-emerald-600",
-  amber: "bg-amber-500",
-  rose: "bg-rose-600",
+  emerald: "bg-low",
+  amber: "bg-med",
+  rose: "bg-high",
+  slate: "bg-brand",
 };
 
 type ProgressBarProps = {
@@ -17,9 +17,9 @@ type ProgressBarProps = {
   className?: string;
 };
 
-function ProgressBar({
+export function ProgressBar({
   value,
-  tone = "indigo",
+  tone = "emerald",
   label,
   showValue = false,
   className,
@@ -29,7 +29,7 @@ function ProgressBar({
   return (
     <div className={className}>
       {(label || showValue) && (
-        <div className="mb-1.5 flex items-center justify-between text-xs text-slate-500">
+        <div className="mb-1.5 flex items-center justify-between text-xs text-ink-2">
           <span>{label}</span>
           {showValue && <span>{Math.round(clamped)}%</span>}
         </div>
@@ -40,14 +40,16 @@ function ProgressBar({
         aria-valuenow={Math.round(clamped)}
         aria-valuemin={0}
         aria-valuemax={100}
-        className="h-2 w-full overflow-hidden rounded-full bg-slate-100"
+        className="h-2 w-full overflow-hidden rounded-full bg-brand-tint"
       >
         <div
-          className={cn("h-full rounded-full transition-[width] duration-300", TONES[tone])}
+          className={cn(
+            "h-full rounded-full transition-[width] duration-300",
+            TONES[tone],
+          )}
           style={{ width: `${clamped}%` }}
         />
       </div>
     </div>
   );
 }
-

@@ -1,27 +1,22 @@
-import { forwardRef } from "react";
 import type { InputHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  invalid?: boolean;
+type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+  error?: string;
 };
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, invalid, type = "text", ...props }, ref) => (
-    <input
-      ref={ref}
-      type={type}
-      aria-invalid={invalid || undefined}
-      className={cn(
-        "h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900",
-        "placeholder:text-slate-400",
-        "focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20",
-        "disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500",
-        invalid && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/20",
-        className,
-      )}
-      {...props}
-    />
-  ),
-);
-
+export function Input({ className, error, ...props }: InputProps) {
+  return (
+    <div>
+      <input
+        className={cn(
+          "h-12 w-full rounded-[10px] border bg-surface px-4 text-[15px] text-ink outline-none placeholder:text-ink-3 focus:border-brand focus:ring-2 focus:ring-brand/15",
+          error ? "border-high" : "border-line",
+          className,
+        )}
+        {...props}
+      />
+      {error && <p className="mt-1 text-xs text-high">{error}</p>}
+    </div>
+  );
+}

@@ -1,10 +1,13 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export function Skeleton({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export function Skeleton({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("animate-pulse rounded-md bg-slate-200", className)}
+      className={cn("animate-pulse rounded-xl bg-brand-tint", className)}
       {...props}
     />
   );
@@ -24,5 +27,7 @@ export function SkeletonButton({
     icon: "size-10",
   } as const;
 
-  return <Skeleton className={cn("rounded-lg", heights[size], className)} />;
+  return <Skeleton className={cn("rounded-xl", heights[size], className)} />;
 }
+
+export default Skeleton;
