@@ -20,10 +20,8 @@ export function ProductivityPanel({ tasks }: { tasks: Task[] }) {
     <Card className="p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-emerald-950">
-            Productivity
-          </h2>
-          <p className="mt-1 text-sm text-emerald-950/60">
+          <h2 className="text-lg font-semibold text-ink">Productivity</h2>
+          <p className="mt-1 text-sm text-ink-2">
             Your completion activity for the selected period.
           </p>
         </div>
@@ -46,13 +44,11 @@ export function ProductivityPanel({ tasks }: { tasks: Task[] }) {
           value={`${stats.hours}h`}
           hint="Estimated workload finished"
         />
-        <div className="rounded-xl bg-emerald-900/5 p-4">
-          <p className="text-xs font-medium tracking-wide text-emerald-950/55 uppercase">
+        <div className="rounded-xl bg-brand-tint p-4">
+          <p className="text-[11px] font-bold tracking-[0.06em] text-ink-3 uppercase">
             Completion rate
           </p>
-          <p className="mt-1 text-2xl font-semibold text-emerald-950">
-            {stats.rate}%
-          </p>
+          <p className="mt-1 text-2xl font-semibold text-ink">{stats.rate}%</p>
           <ProgressBar className="mt-2" value={stats.rate} tone="emerald" />
         </div>
       </div>
@@ -70,12 +66,12 @@ function Stat({
   hint?: string;
 }) {
   return (
-    <div className="rounded-xl bg-emerald-900/5 p-4">
-      <p className="text-xs font-medium tracking-wide text-emerald-950/55 uppercase">
+    <div className="rounded-xl bg-brand-tint p-4">
+      <p className="text-[11px] font-bold tracking-[0.06em] text-ink-3 uppercase">
         {label}
       </p>
-      <p className="mt-1 text-2xl font-semibold text-emerald-950">{value}</p>
-      {hint && <p className="mt-1 text-xs text-emerald-950/60">{hint}</p>}
+      <p className="mt-1 text-2xl font-semibold text-ink">{value}</p>
+      {hint && <p className="mt-1 text-xs text-ink-2">{hint}</p>}
     </div>
   );
 }

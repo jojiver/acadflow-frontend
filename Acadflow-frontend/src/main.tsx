@@ -9,7 +9,14 @@ import LoginPage from "@/pages/auth/login";
 import SignupPage from "@/pages/auth/signup";
 import UserLayout from "@/pages/user/layout";
 import UserHomePage from "@/pages/user/home";
+import SchedulePage from "@/pages/user/schedule";
+import ScheduleImportPage from "@/pages/user/schedule/import";
+import SubjectsPage from "@/pages/user/subjects";
+import ProductivityPage from "@/pages/user/productivity";
 import TasksPage from "@/pages/user/tasks";
+import TaskCreatePage from "@/pages/user/tasks/create";
+import TaskDetailPage from "@/pages/user/tasks/detail";
+import TaskEditPage from "@/pages/user/tasks/edit";
 
 createRoot(document.getElementById("root")!).render(
   <AuthProvider>
@@ -22,14 +29,28 @@ createRoot(document.getElementById("root")!).render(
           <Route index element={<Navigate to="login" replace />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
-          <Route path="register" element={<Navigate to="/auth/signup" replace />} />
+          <Route
+            path="register"
+            element={<Navigate to="/auth/signup" replace />}
+          />
         </Route>
 
         {/* Student pages */}
         <Route element={<ProtectedRoute role="STUDENT" />}>
           <Route path="/user" element={<UserLayout />}>
             <Route index element={<UserHomePage />} />
+            <Route path="schedule" element={<SchedulePage />} />
+            <Route path="schedule/import" element={<ScheduleImportPage />} />
+            <Route
+              path="schedule/review"
+              element={<Navigate to="/user/schedule/import" replace />}
+            />
+            <Route path="subjects" element={<SubjectsPage />} />
+            <Route path="productivity" element={<ProductivityPage />} />
             <Route path="tasks" element={<TasksPage />} />
+            <Route path="tasks/create" element={<TaskCreatePage />} />
+            <Route path="tasks/:id" element={<TaskDetailPage />} />
+            <Route path="tasks/:id/edit" element={<TaskEditPage />} />
           </Route>
         </Route>
 

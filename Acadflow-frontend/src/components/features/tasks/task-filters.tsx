@@ -24,8 +24,8 @@ export function TaskFilters({ value, counts, onChange }: TaskFiltersProps) {
             className={cn(
               "inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-medium transition-colors",
               active
-                ? "border-emerald-900/20 bg-emerald-100 text-emerald-900"
-                : "border-emerald-900/10 bg-[#f7f8f0] text-emerald-950/65 hover:bg-emerald-900/5",
+                ? "border-brand/20 bg-brand-tint font-semibold text-brand"
+                : "border-line bg-surface text-ink-2 hover:bg-brand-tint",
             )}
           >
             {filter}
@@ -33,8 +33,8 @@ export function TaskFilters({ value, counts, onChange }: TaskFiltersProps) {
               className={cn(
                 "rounded-full px-1.5 text-xs",
                 active
-                  ? "bg-emerald-900/10 text-emerald-900"
-                  : "bg-emerald-900/5 text-emerald-950/50",
+                  ? "bg-brand/10 text-brand"
+                  : "bg-brand-tint text-ink-3",
               )}
             >
               {counts[filter]}

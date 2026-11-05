@@ -19,7 +19,12 @@ export const mockTasks: Task[] = [
     estimatedHours: 8,
     difficulty: "Hard",
     importance: "High",
-    progress: 40,
+    progress: 33,
+    steps: [
+      { id: "t1s1", label: "Set up the Laravel project", done: true },
+      { id: "t1s2", label: "Build the REST API endpoints", done: false },
+      { id: "t1s3", label: "Write the project documentation", done: false },
+    ],
   },
   {
     id: "t2",
@@ -30,7 +35,12 @@ export const mockTasks: Task[] = [
     estimatedHours: 3,
     difficulty: "Medium",
     importance: "High",
-    progress: 30,
+    progress: 33,
+    steps: [
+      { id: "t2s1", label: "Draw the ER diagram", done: true },
+      { id: "t2s2", label: "Normalize tables to 3NF", done: false },
+      { id: "t2s3", label: "Write the short explanation", done: false },
+    ],
   },
   {
     id: "t3",
@@ -52,7 +62,12 @@ export const mockTasks: Task[] = [
     estimatedHours: 4,
     difficulty: "Medium",
     importance: "High",
-    progress: 20,
+    progress: 33,
+    steps: [
+      { id: "t4s1", label: "Collect the packet captures", done: true },
+      { id: "t4s2", label: "Analyze the traffic", done: false },
+      { id: "t4s3", label: "Write the lab conclusion", done: false },
+    ],
   },
   {
     id: "t5",
@@ -63,7 +78,12 @@ export const mockTasks: Task[] = [
     estimatedHours: 5,
     difficulty: "Hard",
     importance: "Medium",
-    progress: 60,
+    progress: 67,
+    steps: [
+      { id: "t5s1", label: "Build the low-fidelity prototype", done: true },
+      { id: "t5s2", label: "Test the flow with 3 users", done: true },
+      { id: "t5s3", label: "Prepare the presentation", done: false },
+    ],
   },
   {
     id: "t6",
@@ -97,6 +117,12 @@ export const mockTasks: Task[] = [
     difficulty: "Hard",
     importance: "High",
     progress: 25,
+    steps: [
+      { id: "t8s1", label: "Finalize the chapter 1 draft", done: true },
+      { id: "t8s2", label: "Gather related literature", done: false },
+      { id: "t8s3", label: "Build the system prototype", done: false },
+      { id: "t8s4", label: "Prepare the defense slides", done: false },
+    ],
   },
   {
     id: "t9",

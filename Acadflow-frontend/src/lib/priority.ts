@@ -1,6 +1,17 @@
 export type Difficulty = "Easy" | "Medium" | "Hard";
 export type Importance = "Low" | "Medium" | "High";
 export type PriorityLevel = "High" | "Medium" | "Low";
+export type TaskStatus =
+  | "Not started"
+  | "In progress"
+  | "Almost done"
+  | "Completed";
+
+export type TaskStep = {
+  id: string;
+  label: string;
+  done: boolean;
+};
 
 export type Task = {
   id: string;
@@ -12,8 +23,18 @@ export type Task = {
   difficulty: Difficulty;
   importance: Importance;
   progress: number;
+  description?: string;
+  status?: TaskStatus;
+  steps?: TaskStep[];
   completedAt?: string;
 };
+
+// Progress is calculated from the checklist when a task has steps.
+export function progressFromSteps(steps: TaskStep[]): number {
+  if (steps.length === 0) return 0;
+  const done = steps.filter((step) => step.done).length;
+  return Math.round((done / steps.length) * 100);
+}
 
 export type PriorityFactor = {
   label: string;

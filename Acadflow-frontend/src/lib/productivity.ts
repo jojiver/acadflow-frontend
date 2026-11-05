@@ -15,19 +15,31 @@ const SPAN_DAYS: Record<ProductivityPeriod, number> = {
   month: 30,
 };
 
+export function getProductivityWindow(
+  period: ProductivityPeriod,
+  now = new Date(),
+): { start: Date; end: Date } {
+  const span = SPAN_DAYS[period];
+
+  const start = new Date(now);
+  start.setDate(start.getDate() - (span - 1));
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date(now);
+  end.setDate(end.getDate() + span);
+
+  return { start, end };
+}
+
 export function getProductivity(
   tasks: Task[],
   period: ProductivityPeriod,
   now = new Date(),
 ): Productivity {
-  const span = SPAN_DAYS[period];
-
-  const windowStart = new Date(now);
-  windowStart.setDate(windowStart.getDate() - (span - 1));
-  windowStart.setHours(0, 0, 0, 0);
-
-  const windowEnd = new Date(now);
-  windowEnd.setDate(windowEnd.getDate() + span);
+  const { start: windowStart, end: windowEnd } = getProductivityWindow(
+    period,
+    now,
+  );
 
   const completedTasks = tasks.filter(
     (task) => task.completedAt && new Date(task.completedAt) >= windowStart,
