@@ -100,6 +100,8 @@ export function SignupForm() {
           placeholder="Create a password"
           required
           minLength={8}
+          pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}"
+          title="At least 8 characters, with one uppercase letter and one number"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />

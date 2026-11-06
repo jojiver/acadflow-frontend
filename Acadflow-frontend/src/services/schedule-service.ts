@@ -34,6 +34,14 @@ type ApiSchedule = {
   room: string | null;
 };
 
+export type ScheduleInput = {
+  subjectId: string;
+  day: Weekday;
+  startTime: string;
+  endTime: string;
+  room?: string;
+};
+
 export async function getScheduleService(): Promise<ScheduleClass[]> {
   const response = await http.get("/schedules/v1/get-schedules");
   return (response.data.data.schedules as ApiSchedule[]).map((item) => ({
@@ -44,6 +52,11 @@ export async function getScheduleService(): Promise<ScheduleClass[]> {
     end: item.endTime,
     room: item.room ?? undefined,
   }));
+}
+
+export async function createScheduleService(input: ScheduleInput) {
+  const response = await http.post("/schedules/v1/create-schedule", input);
+  return response.data.data.schedule as { id: string };
 }
 
 // Design-only preview for the import review screen. Upload/extraction is not

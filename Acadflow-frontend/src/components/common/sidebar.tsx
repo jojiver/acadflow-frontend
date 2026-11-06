@@ -14,7 +14,7 @@ const PRIMARY: NavItem[] = [
   { to: "/user", label: "Dashboard", icon: "▦", end: true },
   { to: "/user/schedule", label: "Schedule", icon: "☰" },
   { to: "/user/subjects", label: "Subjects", icon: "◫" },
-  { to: "/user/tasks", label: "Tasks & Priorities", icon: "✓" },
+  { to: "/user/tasks", label: "Task", icon: "✓" },
   { to: "/user/productivity", label: "Productivity", icon: "◔" },
   { to: null, label: "Calendar", icon: "▤" },
   { to: null, label: "Workload", icon: "◧" },
