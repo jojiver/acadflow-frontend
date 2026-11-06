@@ -1,8 +1,8 @@
-import { mockTasks } from "@/lib/mock-tasks";
-import { progressFromSteps } from "@/lib/priority";
+import { http } from "@/lib/axios";
 import type {
   Difficulty,
   Importance,
+  Priority,
   Task,
   TaskStatus,
   TaskStep,
@@ -10,7 +10,7 @@ import type {
 
 export type TaskInput = {
   title: string;
-  subject: string;
+  subjectId: string | null;
   type: string;
   deadline: string;
   estimatedHours: number;
@@ -22,66 +22,103 @@ export type TaskInput = {
   steps: TaskStep[];
 };
 
-// Temporary in-memory store until the Express API is connected.
-// Swap each body for the matching http call (GET/POST/PUT/DELETE /tasks).
-let store: Task[] = mockTasks.map((task) => ({ ...task }));
+type ApiStep = {
+  id: string;
+  label: string;
+  done: boolean;
+};
 
-function effectiveProgress(input: TaskInput): number {
-  return input.steps.length > 0
-    ? progressFromSteps(input.steps)
-    : input.progress;
+type ApiTask = {
+  id: string;
+  title: string;
+  subjectId: string | null;
+  subjectName: string | null;
+  type: string;
+  description: string | null;
+  deadline: string;
+  estimatedHours: number;
+  difficulty: Difficulty;
+  importance: Importance;
+  progress: number;
+  status: TaskStatus;
+  completedAt: string | null;
+  steps: ApiStep[];
+  priority: Priority;
+};
+
+function mapTask(task: ApiTask): Task {
+  return {
+    id: task.id,
+    title: task.title,
+    subject: task.subjectName ?? "General",
+    subjectId: task.subjectId,
+    type: task.type,
+    deadline: task.deadline,
+    estimatedHours: task.estimatedHours,
+    difficulty: task.difficulty,
+    importance: task.importance,
+    progress: task.progress,
+    description: task.description ?? undefined,
+    status: task.status,
+    steps: (task.steps ?? []).map((step) => ({
+      id: step.id,
+      label: step.label,
+      done: step.done,
+    })),
+    completedAt: task.completedAt ?? undefined,
+    priority: task.priority,
+  };
 }
 
-function completion(
-  progress: number,
-  status: TaskStatus,
-): Pick<Task, "completedAt"> {
-  const done = status === "Completed" || progress >= 100;
-  return done
-    ? { completedAt: new Date().toISOString() }
-    : { completedAt: undefined };
-}
+export type Productivity = {
+  period: "today" | "week" | "month";
+  completed: number;
+  hours: number;
+  open: number;
+  rate: number;
+  completedTasks: Task[];
+};
 
 export async function getTasksService(): Promise<Task[]> {
-  return store.map((task) => ({ ...task }));
+  const response = await http.get("/tasks/v1/get-tasks");
+  return (response.data.data.tasks as ApiTask[]).map(mapTask);
 }
 
 export async function getTaskService(id: string): Promise<Task> {
-  const task = store.find((item) => item.id === id);
-  if (!task) throw new Error("Task not found.");
-  return { ...task };
+  const response = await http.get(`/tasks/v1/get-task/${id}`);
+  return mapTask(response.data.data.task as ApiTask);
 }
 
 export async function createTaskService(input: TaskInput): Promise<Task> {
-  const progress = effectiveProgress(input);
-  const task: Task = {
-    id: crypto.randomUUID(),
-    ...input,
-    progress,
-    ...completion(progress, input.status),
-  };
-  store = [task, ...store];
-  return { ...task };
+  const response = await http.post("/tasks/v1/create-task", input);
+  return mapTask(response.data.data.task as ApiTask);
 }
 
 export async function updateTaskService(
   id: string,
   input: TaskInput,
 ): Promise<Task> {
-  const existing = store.find((item) => item.id === id);
-  if (!existing) throw new Error("Task not found.");
-
-  const progress = effectiveProgress(input);
-  const updated: Task = {
-    ...existing,
-    ...input,
-    progress,
-    ...completion(progress, input.status),
-  };
-  store = store.map((item) => (item.id === id ? updated : item));
-  return { ...updated };
+  const response = await http.post(`/tasks/v1/update-task/${id}`, input);
+  return mapTask(response.data.data.task as ApiTask);
 }
 
 export async function deleteTaskService(id: string): Promise<void> {
-  store = store.filter((item) => item.id !== id);
+  await http.post(`/tasks/v1/delete-task/${id}`, {});
+}
+
+export async function getProductivityService(
+  period: "today" | "week" | "month",
+): Promise<Productivity> {
+  const response = await http.get("/tasks/v1/productivity", {
+    params: { period },
+  });
+  const data = response.data.data;
+  return {
+    period: data.period,
+    completed: data.completed,
+    hours: data.hours,
+    open: data.open,
+    rate: data.rate,
+    completedTasks: (data.completedTasks as ApiTask[]).map(mapTask),
+  };
 }

@@ -9,11 +9,7 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getErrorMessage } from "@/lib/errors";
 import { cn } from "@/lib/cn";
-import {
-  calculatePriority,
-  deadlineNote,
-  progressFromSteps,
-} from "@/lib/priority";
+import { deadlineNote, progressFromSteps } from "@/lib/priority";
 import type { Task, TaskStatus, TaskStep } from "@/lib/priority";
 import {
   deleteTaskService,
@@ -25,7 +21,7 @@ import type { TaskInput } from "@/services/task-service";
 function toInput(task: Task): TaskInput {
   return {
     title: task.title,
-    subject: task.subject,
+    subjectId: task.subjectId ?? null,
     type: task.type,
     deadline: task.deadline,
     estimatedHours: task.estimatedHours,
@@ -142,7 +138,7 @@ export function TaskDetail() {
     return <Skeleton className="h-96 rounded-2xl" />;
   }
 
-  const priority = calculatePriority(task);
+  const priority = task.priority;
   const overdue = priority.daysRemaining < 0;
   const doneSteps = task.steps?.filter((step) => step.done).length ?? 0;
   const totalSteps = task.steps?.length ?? 0;

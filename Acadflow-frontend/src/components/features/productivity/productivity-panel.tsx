@@ -1,10 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { SegmentedControl } from "@/components/ui/segmented-control";
-import { getProductivity } from "@/lib/productivity";
-import type { ProductivityPeriod } from "@/lib/productivity";
-import type { Task } from "@/lib/priority";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProductivityService } from "@/services/task-service";
+import type { Productivity } from "@/services/task-service";
+
+export type ProductivityPeriod = "today" | "week" | "month";
 
 const OPTIONS: { value: ProductivityPeriod; label: string }[] = [
   { value: "today", label: "Today" },
@@ -12,9 +14,25 @@ const OPTIONS: { value: ProductivityPeriod; label: string }[] = [
   { value: "month", label: "This Month" },
 ];
 
-export function ProductivityPanel({ tasks }: { tasks: Task[] }) {
+export function ProductivityPanel() {
   const [period, setPeriod] = useState<ProductivityPeriod>("week");
-  const stats = useMemo(() => getProductivity(tasks, period), [tasks, period]);
+  const [stats, setStats] = useState<Productivity | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    getProductivityService(period)
+      .then((result) => {
+        if (active) setStats(result);
+      })
+      .catch(() => {
+        if (active) setStats(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [period]);
 
   return (
     <Card className="p-6">
@@ -33,25 +51,31 @@ export function ProductivityPanel({ tasks }: { tasks: Task[] }) {
         />
       </div>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-3">
-        <Stat
-          label="Tasks completed"
-          value={stats.completed}
-          hint={`${stats.open} still open`}
-        />
-        <Stat
-          label="Hours completed"
-          value={`${stats.hours}h`}
-          hint="Estimated workload finished"
-        />
-        <div className="rounded-xl bg-brand-tint p-4">
-          <p className="text-[11px] font-bold tracking-[0.06em] text-ink-3 uppercase">
-            Completion rate
-          </p>
-          <p className="mt-1 text-2xl font-semibold text-ink">{stats.rate}%</p>
-          <ProgressBar className="mt-2" value={stats.rate} tone="emerald" />
+      {stats === null ? (
+        <Skeleton className="mt-5 h-32 rounded-xl" />
+      ) : (
+        <div className="mt-5 grid gap-4 sm:grid-cols-3">
+          <Stat
+            label="Tasks completed"
+            value={stats.completed}
+            hint={`${stats.open} still open`}
+          />
+          <Stat
+            label="Hours completed"
+            value={`${stats.hours}h`}
+            hint="Estimated workload finished"
+          />
+          <div className="rounded-xl bg-brand-tint p-4">
+            <p className="text-[11px] font-bold tracking-[0.06em] text-ink-3 uppercase">
+              Completion rate
+            </p>
+            <p className="mt-1 text-2xl font-semibold text-ink">
+              {stats.rate}%
+            </p>
+            <ProgressBar className="mt-2" value={stats.rate} tone="emerald" />
+          </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 }

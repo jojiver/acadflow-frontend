@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ProductivityPanel } from "@/components/features/productivity/productivity-panel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { calculatePriority } from "@/lib/priority";
 import type { Task } from "@/lib/priority";
 import { getTasksService } from "@/services/task-service";
 import { TaskCollection } from "./task-collection";
@@ -34,10 +33,9 @@ export function Tasks() {
 
   const ranked = useMemo(
     () =>
-      (tasks ?? []).map((task) => ({
-        task,
-        priority: calculatePriority(task),
-      })),
+      (tasks ?? [])
+        .map((task) => ({ task, priority: task.priority }))
+        .sort((a, b) => b.priority.score - a.priority.score),
     [tasks],
   );
 
@@ -77,7 +75,7 @@ export function Tasks() {
 
   return (
     <div className="space-y-6">
-      <ProductivityPanel tasks={tasks} />
+      <ProductivityPanel />
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <TaskFilters value={filter} counts={counts} onChange={setFilter} />

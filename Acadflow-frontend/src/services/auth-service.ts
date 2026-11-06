@@ -1,13 +1,13 @@
-import { http } from "@/lib/axios";
+import { clearCsrfToken, ensureCsrfToken, http } from "@/lib/axios";
 
 export type User = {
   id: string;
   name: string;
   email: string;
   role: "STUDENT" | "ADMIN";
-  studentId?: string;
-  program?: string;
-  yearLevel?: string;
+  studentId?: string | null;
+  program?: string | null;
+  yearLevel?: string | null;
 };
 
 export type SignupInput = {
@@ -19,24 +19,27 @@ export type SignupInput = {
   password: string;
 };
 
-// Get the signed-in student for the current cookie session.
-export async function getSessionService() {
-  const response = await http.get("/user");
+async function getSessionService() {
+  const response = await http.get("/auth/v1/session");
   return response.data.data.user as User;
 }
 
 export async function loginService(email: string, password: string) {
-  await http.post("/login", { email, password });
+  await ensureCsrfToken();
+  await http.post("/auth/v1/login", { email, password });
+  await ensureCsrfToken();
   return getSessionService();
 }
 
 export async function signupService(input: SignupInput) {
-  await http.post("/register", input);
+  await ensureCsrfToken();
+  await http.post("/auth/v1/signup", input);
   return loginService(input.email, input.password);
 }
 
 export async function logoutService() {
-  await http.post("/logout", {});
+  await http.post("/auth/v1/logout", {});
+  clearCsrfToken();
 }
 
 export async function restoreSessionService() {

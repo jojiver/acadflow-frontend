@@ -7,16 +7,16 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Modal } from "@/components/ui/modal";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getProductivity } from "@/lib/productivity";
 import { getErrorMessage } from "@/lib/errors";
-import { calculatePriority, deadlineNote } from "@/lib/priority";
+import { deadlineNote } from "@/lib/priority";
 import type { PriorityLevel, Task } from "@/lib/priority";
 import {
   deleteTaskService,
+  getProductivityService,
   getTasksService,
   updateTaskService,
 } from "@/services/task-service";
-import type { TaskInput } from "@/services/task-service";
+import type { Productivity, TaskInput } from "@/services/task-service";
 
 const LEVEL_VARIANT: Record<PriorityLevel, "high" | "medium" | "low"> = {
   High: "high",
@@ -35,7 +35,7 @@ const XP_PER_LEVEL = 500;
 function toInput(task: Task): TaskInput {
   return {
     title: task.title,
-    subject: task.subject,
+    subjectId: task.subjectId ?? null,
     type: task.type,
     deadline: task.deadline,
     estimatedHours: task.estimatedHours,
@@ -88,6 +88,7 @@ export function Dashboard() {
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<Task[] | null>(null);
+  const [week, setWeek] = useState<Productivity | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -109,6 +110,22 @@ export function Dashboard() {
     }
 
     return cleanup;
+  }, []);
+
+  useEffect(function fetchWeeklyProductivity() {
+    let active = true;
+
+    getProductivityService("week")
+      .then((result) => {
+        if (active) setWeek(result);
+      })
+      .catch(() => {
+        if (active) setWeek(null);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function refresh() {
@@ -151,7 +168,7 @@ export function Dashboard() {
   const ranked = useMemo(
     () =>
       (tasks ?? [])
-        .map((task) => ({ task, priority: calculatePriority(task) }))
+        .map((task) => ({ task, priority: task.priority }))
         .sort((a, b) => b.priority.score - a.priority.score),
     [tasks],
   );
@@ -179,7 +196,6 @@ export function Dashboard() {
   const level = Math.floor(xp / XP_PER_LEVEL) + 1;
   const intoLevel = xp % XP_PER_LEVEL;
 
-  const week = getProductivity(tasks ?? [], "week");
   const dueSoon = active.filter(
     (item) =>
       item.priority.daysRemaining >= 0 && item.priority.daysRemaining <= 7,
@@ -249,8 +265,8 @@ export function Dashboard() {
             This week
           </p>
           <div className="mt-3 grid grid-cols-3 gap-3">
-            <MiniStat label="Done" value={week.completed} />
-            <MiniStat label="Hours" value={`${week.hours}h`} />
+            <MiniStat label="Done" value={week?.completed ?? 0} />
+            <MiniStat label="Hours" value={`${week?.hours ?? 0}h`} />
             <MiniStat label="Due soon" value={dueSoon} />
           </div>
           <p className="mt-3 text-xs text-ink-3">

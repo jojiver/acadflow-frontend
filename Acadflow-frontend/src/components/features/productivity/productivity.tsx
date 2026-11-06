@@ -1,70 +1,46 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getProductivity, getProductivityWindow } from "@/lib/productivity";
-import type { ProductivityPeriod } from "@/lib/productivity";
-import type { Task } from "@/lib/priority";
-import { getTasksService } from "@/services/task-service";
+import { getProductivityService } from "@/services/task-service";
+import type { Productivity as ProductivityStats } from "@/services/task-service";
 
-const OPTIONS: { value: ProductivityPeriod; label: string }[] = [
+type Period = "today" | "week" | "month";
+
+const OPTIONS: { value: Period; label: string }[] = [
   { value: "today", label: "Today" },
   { value: "week", label: "This Week" },
   { value: "month", label: "This Month" },
 ];
 
-const PERIOD_LABEL: Record<ProductivityPeriod, string> = {
+const PERIOD_LABEL: Record<Period, string> = {
   today: "today",
   week: "this week",
   month: "this month",
 };
 
-// Productivity tracker: how much was finished today, this week, this month.
 export function Productivity() {
-  const [period, setPeriod] = useState<ProductivityPeriod>("week");
-  const [tasks, setTasks] = useState<Task[] | null>(null);
+  const [period, setPeriod] = useState<Period>("week");
+  const [stats, setStats] = useState<ProductivityStats | null>(null);
 
-  useEffect(function fetchTasks() {
+  useEffect(() => {
     let active = true;
 
-    getTasksService()
+    getProductivityService(period)
       .then((result) => {
-        if (active) setTasks(result);
+        if (active) setStats(result);
       })
       .catch(() => {
-        if (active) setTasks([]);
+        if (active) setStats(null);
       });
 
-    function cleanup() {
+    return () => {
       active = false;
-    }
+    };
+  }, [period]);
 
-    return cleanup;
-  }, []);
-
-  const stats = useMemo(
-    () => (tasks ? getProductivity(tasks, period) : null),
-    [tasks, period],
-  );
-
-  const completed = useMemo(() => {
-    if (!tasks) return [];
-
-    const { start, end } = getProductivityWindow(period);
-
-    return tasks
-      .filter((task) => {
-        if (!task.completedAt) return false;
-        const at = new Date(task.completedAt);
-        return at >= start && at <= end;
-      })
-      .sort(
-        (a, b) =>
-          new Date(b.completedAt ?? 0).getTime() -
-          new Date(a.completedAt ?? 0).getTime(),
-      );
-  }, [tasks, period]);
+  const completed = stats?.completedTasks ?? [];
 
   return (
     <div className="space-y-5">

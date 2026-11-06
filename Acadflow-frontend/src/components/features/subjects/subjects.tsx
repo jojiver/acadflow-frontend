@@ -11,7 +11,6 @@ import {
   createSubjectService,
   deleteSubjectService,
   getSubjectsService,
-  subjectUpcoming,
   updateSubjectService,
 } from "@/services/subject-service";
 import type {
@@ -352,35 +351,6 @@ export function Subjects() {
             </ul>
           </Card>
 
-          <Card className="p-[18px]">
-            <h2 className="text-sm font-bold text-ink">Coming up</h2>
-            <ul className="mt-3 space-y-2">
-              {subjectUpcoming.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-center gap-2.5 rounded-lg bg-canvas p-2.5"
-                >
-                  <span className="h-6 w-2 shrink-0 rounded bg-brand" />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-semibold text-ink">
-                      {item.subject}
-                    </p>
-                    <p className="truncate text-[10.5px] text-ink-3">
-                      {item.detail}
-                    </p>
-                  </div>
-                  <span
-                    className={cn(
-                      "shrink-0 text-[11px] font-bold",
-                      item.date === "Today" ? "text-brand" : "text-ink-2",
-                    )}
-                  >
-                    {item.date}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Card>
         </div>
       </div>
 

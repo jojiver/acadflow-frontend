@@ -9,10 +9,8 @@ import type {
   Subject,
   SubjectCategory,
   SubjectInput,
-  SubjectPriority,
 } from "@/services/subject-service";
 
-const PRIORITIES: SubjectPriority[] = ["Low", "Medium", "High"];
 const CATEGORIES: SubjectCategory[] = ["Core", "Elective", "Archived"];
 
 type SubjectFormProps = {
@@ -36,12 +34,6 @@ export function SubjectForm({
   const [instructor, setInstructor] = useState(initial?.instructor ?? "");
   const [room, setRoom] = useState(initial?.room ?? "");
   const [schedule, setSchedule] = useState(initial?.schedule ?? "");
-  const [tasks, setTasks] = useState(initial?.tasks ?? 0);
-  const [dueNow, setDueNow] = useState(initial?.dueNow ?? 0);
-  const [progress, setProgress] = useState(initial?.progress ?? 0);
-  const [priority, setPriority] = useState<SubjectPriority>(
-    initial?.priority ?? "Medium",
-  );
   const [category, setCategory] = useState<SubjectCategory>(
     initial?.category ?? "Core",
   );
@@ -53,10 +45,6 @@ export function SubjectForm({
       instructor: instructor.trim(),
       room: room.trim(),
       schedule: schedule.trim(),
-      tasks: Number(tasks),
-      dueNow: Number(dueNow),
-      progress: Math.min(100, Math.max(0, Number(progress))),
-      priority,
       category,
     });
   }
@@ -110,74 +98,21 @@ export function SubjectForm({
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="subject-tasks">Tasks</Label>
-            <Input
-              id="subject-tasks"
-              type="number"
-              min={0}
-              value={tasks}
-              onChange={(event) => setTasks(Number(event.target.value))}
-            />
-          </div>
-          <div>
-            <Label htmlFor="subject-due">Due now</Label>
-            <Input
-              id="subject-due"
-              type="number"
-              min={0}
-              value={dueNow}
-              onChange={(event) => setDueNow(Number(event.target.value))}
-            />
-          </div>
-        </div>
-
         <div>
-          <Label htmlFor="subject-progress">Progress (%)</Label>
-          <Input
-            id="subject-progress"
-            type="number"
-            min={0}
-            max={100}
-            value={progress}
-            onChange={(event) => setProgress(Number(event.target.value))}
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="subject-priority">Priority</Label>
-            <Select
-              id="subject-priority"
-              value={priority}
-              onChange={(event) =>
-                setPriority(event.target.value as SubjectPriority)
-              }
-            >
-              {PRIORITIES.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="subject-category">Category</Label>
-            <Select
-              id="subject-category"
-              value={category}
-              onChange={(event) =>
-                setCategory(event.target.value as SubjectCategory)
-              }
-            >
-              {CATEGORIES.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <Label htmlFor="subject-category">Category</Label>
+          <Select
+            id="subject-category"
+            value={category}
+            onChange={(event) =>
+              setCategory(event.target.value as SubjectCategory)
+            }
+          >
+            {CATEGORIES.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </Select>
         </div>
 
         {error && (

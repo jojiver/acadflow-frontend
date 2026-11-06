@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode, SubmitEvent } from "react";
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
@@ -17,17 +17,8 @@ import type {
   TaskStatus,
   TaskStep,
 } from "@/lib/priority";
+import { getSubjectsService } from "@/services/subject-service";
 import type { TaskInput } from "@/services/task-service";
-
-const SUBJECTS = [
-  "Database Systems",
-  "Web Development",
-  "Human Computer Interaction",
-  "Networking",
-  "Programming",
-  "Research",
-  "Capstone",
-];
 
 const TASK_TYPES = [
   "Assignment",
@@ -159,12 +150,26 @@ export function TaskForm({
 }: TaskFormProps) {
   const navigate = useNavigate();
 
-  const subjectOptions =
-    initial && !SUBJECTS.includes(initial.subject)
-      ? [initial.subject, ...SUBJECTS]
-      : SUBJECTS;
+  const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
+  const [subjectId, setSubjectId] = useState(initial?.subjectId ?? "");
 
-  const [subject, setSubject] = useState(initial?.subject ?? SUBJECTS[0]);
+  useEffect(() => {
+    let active = true;
+
+    getSubjectsService()
+      .then((list) => {
+        if (active) {
+          setSubjects(list.map((item) => ({ id: item.id, name: item.name })));
+        }
+      })
+      .catch(() => {
+        // The subject select stays on "General" when subjects cannot load.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
   const [importance, setImportance] = useState<Importance>(
     initial?.importance ?? "Medium",
   );
@@ -223,7 +228,7 @@ export function TaskForm({
 
     onSubmit({
       title: title.trim(),
-      subject,
+      subjectId: subjectId || null,
       type,
       deadline: new Date(deadline).toISOString(),
       estimatedHours: Number(estimatedHours),
@@ -253,12 +258,13 @@ export function TaskForm({
                 <Select
                   id="task-subject"
                   className="h-[42px] rounded-lg px-3"
-                  value={subject}
-                  onChange={(event) => setSubject(event.target.value)}
+                  value={subjectId}
+                  onChange={(event) => setSubjectId(event.target.value)}
                 >
-                  {subjectOptions.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
+                  <option value="">General (no subject)</option>
+                  {subjects.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
                     </option>
                   ))}
                 </Select>

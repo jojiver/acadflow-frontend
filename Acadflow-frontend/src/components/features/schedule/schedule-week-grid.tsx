@@ -106,12 +106,7 @@ export function ScheduleWeekGrid({
                     return (
                       <div
                         key={item.id}
-                        className={cn(
-                          "absolute inset-x-1.5 overflow-hidden rounded-xl px-2.5 py-2",
-                          item.kind === "study"
-                            ? "border border-dashed border-ink-3 bg-brand-tint/70"
-                            : "border border-line bg-brand-tint",
-                        )}
+                        className="absolute inset-x-1.5 overflow-hidden rounded-xl border border-line bg-brand-tint px-2.5 py-2"
                         style={{ top, height: height - 2 }}
                       >
                         <p className="truncate text-[13px] font-semibold text-ink">
