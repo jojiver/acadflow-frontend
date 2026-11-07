@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 const FEATURES = [
   "Import your timetable from a PDF or photo",
   "Every task ranked by a 0–100 priority score",
@@ -11,12 +13,16 @@ export function AuthBrandPanel() {
       <div className="pointer-events-none absolute -left-[140px] bottom-[150px] size-[420px] rounded-full bg-white/[0.08]" />
       <div className="pointer-events-none absolute -top-[120px] -right-[60px] size-[340px] rounded-full bg-white/[0.07]" />
 
-      <div className="relative flex items-center gap-3">
+      <Link
+        to="/"
+        aria-label="Go to AcadFlow home"
+        className="relative flex items-center gap-3 transition-opacity hover:opacity-90"
+      >
         <span className="grid size-11 place-items-center rounded-xl border border-white/[0.35] bg-white/[0.15] text-lg font-bold text-white">
           A
         </span>
         <span className="text-2xl font-bold text-white">AcadFlow</span>
-      </div>
+      </Link>
 
       <div className="relative max-w-[470px]">
         <h1 className="text-[44px] leading-[54px] font-bold text-white">

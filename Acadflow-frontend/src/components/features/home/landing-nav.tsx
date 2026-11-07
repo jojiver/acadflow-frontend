@@ -1,11 +1,12 @@
-import { Link, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/cn";
 
 const LINKS = [
-  { href: "#features", label: "Features" },
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#import", label: "Import" },
-  { href: "#testimonials", label: "Testimonials" },
+  { to: "/features", label: "Features" },
+  { to: "/how-it-works", label: "How it works" },
+  { to: "/import", label: "Import" },
+  { to: "/testimonials", label: "Testimonials" },
 ];
 
 export function LandingNav() {
@@ -23,13 +24,18 @@ export function LandingNav() {
 
         <nav className="hidden items-center gap-7 lg:flex">
           {LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-[13px] font-medium text-ink-2 transition-colors hover:text-ink"
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                cn(
+                  "text-[13px] font-medium transition-colors",
+                  isActive ? "text-brand" : "text-ink-2 hover:text-ink",
+                )
+              }
             >
               {link.label}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
