@@ -18,6 +18,11 @@ import SchedulePage from "@/pages/user/schedule";
 import ScheduleImportPage from "@/pages/user/schedule/import";
 import SubjectsPage from "@/pages/user/subjects";
 import ProductivityPage from "@/pages/user/productivity";
+import CalendarPage from "@/pages/user/calendar";
+import WorkloadPage from "@/pages/user/workload";
+import NotificationsPage from "@/pages/user/notifications";
+import ProfilePage from "@/pages/user/profile";
+import SettingsPage from "@/pages/user/settings";
 import TasksPage from "@/pages/user/tasks";
 import TaskCreatePage from "@/pages/user/tasks/create";
 import TaskDetailPage from "@/pages/user/tasks/detail";
@@ -59,6 +64,11 @@ createRoot(document.getElementById("root")!).render(
             />
             <Route path="subjects" element={<SubjectsPage />} />
             <Route path="productivity" element={<ProductivityPage />} />
+            <Route path="calendar" element={<CalendarPage />} />
+            <Route path="workload" element={<WorkloadPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="settings" element={<SettingsPage />} />
             <Route path="tasks" element={<TasksPage />} />
             <Route path="tasks/create" element={<TaskCreatePage />} />
             <Route path="tasks/:id" element={<TaskDetailPage />} />

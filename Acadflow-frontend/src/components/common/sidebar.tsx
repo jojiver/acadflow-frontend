@@ -14,16 +14,16 @@ const PRIMARY: NavItem[] = [
   { to: "/user", label: "Dashboard", icon: "▦", end: true },
   { to: "/user/schedule", label: "Schedule", icon: "☰" },
   { to: "/user/subjects", label: "Subjects", icon: "◫" },
-  { to: "/user/tasks", label: "Task", icon: "✓" },
+  { to: "/user/tasks", label: "Tasks & Priorities", icon: "✓" },
   { to: "/user/productivity", label: "Productivity", icon: "◔" },
-  { to: null, label: "Calendar", icon: "▤" },
-  { to: null, label: "Workload", icon: "◧" },
+  { to: "/user/calendar", label: "Calendar", icon: "▤" },
+  { to: "/user/workload", label: "Workload", icon: "◧" },
 ];
 
 const GENERAL: NavItem[] = [
-  { to: null, label: "Notifications", icon: "◉", badge: "3" },
-  { to: null, label: "Settings", icon: "⚙" },
-  { to: null, label: "Profile", icon: "◍" },
+  { to: "/user/notifications", label: "Notifications", icon: "◉", badge: "3" },
+  { to: "/user/settings", label: "Settings", icon: "⚙" },
+  { to: "/user/profile", label: "Profile", icon: "◍" },
 ];
 
 function getInitials(name?: string) {

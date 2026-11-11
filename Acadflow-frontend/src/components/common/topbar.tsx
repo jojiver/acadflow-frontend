@@ -29,6 +29,36 @@ function getPageMeta(pathname: string): PageMeta {
         "Track progress, materials, and upcoming work across each subject.",
     };
   }
+  if (pathname === "/user/calendar") {
+    return {
+      title: "Calendar",
+      subtitle: "Classes, deadlines and study sessions in one view.",
+    };
+  }
+  if (pathname === "/user/workload") {
+    return {
+      title: "Workload",
+      subtitle: "See where your academic work is concentrated.",
+    };
+  }
+  if (pathname === "/user/notifications") {
+    return {
+      title: "Notifications",
+      subtitle: "Deadline, class, priority and workload alerts.",
+    };
+  }
+  if (pathname === "/user/settings") {
+    return {
+      title: "Settings",
+      subtitle: "Account, academic, notification and schedule preferences.",
+    };
+  }
+  if (pathname === "/user/profile") {
+    return {
+      title: "Profile",
+      subtitle: "Your student details and academic summary.",
+    };
+  }
   if (pathname === "/user/productivity") {
     return {
       title: "Productivity",
