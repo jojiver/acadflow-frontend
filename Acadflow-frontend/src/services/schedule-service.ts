@@ -1,6 +1,6 @@
 import { http } from "@/lib/axios";
 
-export type Weekday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri";
+export type Weekday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
 export type ScheduleClass = {
   id: string;
@@ -17,12 +17,39 @@ export type ImportedClass = {
   id: string;
   subject: string;
   day: string;
+  startTime: string;
+  endTime: string;
   time: string;
-  room: string;
+  room?: string | null;
   confidence: Confidence;
-  note?: string;
+  note?: string | null;
   conflict?: boolean;
   selected: boolean;
+};
+
+export type ImportSummary = {
+  classes: number;
+  subjects: number;
+  conflicts: number;
+  duplicates: number;
+};
+
+export type ImportSource = {
+  name: string;
+  size: number;
+  type: string | null;
+};
+
+export type ImportPreviewResult = {
+  classes: ImportedClass[];
+  summary: ImportSummary;
+  source: ImportSource;
+};
+
+export type ImportConfirmResult = {
+  created: number;
+  skipped: number;
+  subjectsCreated: number;
 };
 
 type ApiSchedule = {
@@ -59,21 +86,32 @@ export async function createScheduleService(input: ScheduleInput) {
   return response.data.data.schedule as { id: string };
 }
 
-// Design-only preview for the import review screen. Upload/extraction is not
-// implemented yet, so this sample stays until the backend import endpoint exists.
-const IMPORT_PREVIEW: ImportedClass[] = [
-  { id: "i1", subject: "Web Development", day: "Mon, Wed", time: "8:00 – 10:00 AM", room: "Lab 1", confidence: "High", selected: true },
-  { id: "i2", subject: "Database Mgmt", day: "Tue, Fri", time: "10:00 – 12:00 PM", room: "Room 204", confidence: "High", selected: true },
-  { id: "i3", subject: "Networking", day: "Thu", time: "9:00 – 11:00 AM", room: "Lab 2", confidence: "High", selected: true },
-  { id: "i4", subject: "Programming", day: "Mon", time: "1:00 – 2:30 PM", room: "Room 108", confidence: "Medium", selected: true },
-  { id: "i5", subject: "Human-Computer Interaction", day: "Tue", time: "3:00 – 4:00 PM", room: "Room 305", confidence: "Medium", selected: true },
-  { id: "i6", subject: "Programming", day: "Thu", time: "2:00 – 4:00 PM", room: "Room 108", confidence: "Low", note: "Matches an existing class already in your schedule", selected: false },
-  { id: "i7", subject: "Web Development", day: "Wed", time: "1:00 – 3:00 PM", room: "Lab 1", confidence: "Medium", note: "Overlaps Database Mgmt · Wed 1:00 – 3:00 PM", conflict: true, selected: true },
-  { id: "i8", subject: "Web Development", day: "Fri", time: "11:00 AM – 12:30 PM", room: "Lab 1", confidence: "Medium", selected: true },
-  { id: "i9", subject: "Networking", day: "Tue", time: "1:00 – 2:30 PM", room: "Room 210", confidence: "Medium", selected: true },
-  { id: "i10", subject: "Database Mgmt", day: "Wed", time: "4:00 – 5:30 PM", room: "Room 204", confidence: "Medium", selected: true },
-];
+export async function previewScheduleImportService(
+  file: File,
+): Promise<ImportPreviewResult> {
+  const form = new FormData();
+  form.append("file", file);
 
-export async function getImportPreviewService(): Promise<ImportedClass[]> {
-  return IMPORT_PREVIEW;
+  const response = await http.post("/schedules/v1/import", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return response.data.data as ImportPreviewResult;
+}
+
+export async function confirmScheduleImportService(
+  classes: ImportedClass[],
+): Promise<ImportConfirmResult> {
+  const response = await http.post("/schedules/v1/import/confirm", {
+    classes: classes.map((item) => ({
+      subject: item.subject,
+      day: item.day,
+      startTime: item.startTime,
+      endTime: item.endTime,
+      room: item.room ?? null,
+      selected: item.selected,
+    })),
+  });
+
+  return response.data.data as ImportConfirmResult;
 }

@@ -14,7 +14,7 @@ import { ScheduleWeekGrid } from "./schedule-week-grid";
 const VIEWS = ["Day", "Week", "Month"] as const;
 type View = (typeof VIEWS)[number];
 
-const WEEK: Weekday[] = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+const WEEK: Weekday[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function Schedule() {
   const navigate = useNavigate();

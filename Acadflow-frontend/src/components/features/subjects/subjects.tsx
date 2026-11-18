@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -36,6 +37,8 @@ const LEVEL_VARIANT = {
 } as const;
 
 export function Subjects() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = (searchParams.get("q") ?? "").trim().toLowerCase();
   const [subjects, setSubjects] = useState<Subject[] | null>(null);
   const [tab, setTab] = useState<Tab>("All");
   const [formOpen, setFormOpen] = useState(false);
@@ -79,14 +82,26 @@ export function Subjects() {
   }, [subjects]);
 
   const filtered = useMemo(() => {
-    const list = subjects ?? [];
-    if (tab === "All") return list;
-    if (tab === "Core") return list.filter((item) => item.category === "Core");
-    if (tab === "Electives") {
-      return list.filter((item) => item.category === "Elective");
+    let list = subjects ?? [];
+
+    if (tab === "Core") {
+      list = list.filter((item) => item.category === "Core");
+    } else if (tab === "Electives") {
+      list = list.filter((item) => item.category === "Elective");
+    } else if (tab === "Archived") {
+      list = list.filter((item) => item.category === "Archived");
     }
-    return list.filter((item) => item.category === "Archived");
-  }, [subjects, tab]);
+
+    if (searchQuery) {
+      list = list.filter((item) =>
+        [item.name, item.instructor, item.room, item.schedule].some((value) =>
+          value?.toLowerCase().includes(searchQuery),
+        ),
+      );
+    }
+
+    return list;
+  }, [subjects, tab, searchQuery]);
 
   const active = (subjects ?? []).filter(
     (item) => item.category !== "Archived",
@@ -204,9 +219,20 @@ export function Subjects() {
         <Card className="p-[18px]">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-base font-bold text-ink">My subjects</h2>
-            <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-medium text-ink-2">
-              {filtered.length} of {subjects.length} shown
-            </span>
+            <div className="flex items-center gap-2">
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchParams({})}
+                  className="cursor-pointer rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-2 hover:bg-brand-tint"
+                >
+                  Clear search
+                </button>
+              )}
+              <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-medium text-ink-2">
+                {filtered.length} of {subjects.length} shown
+              </span>
+            </div>
           </div>
 
           {GROUPS.map((group) => {

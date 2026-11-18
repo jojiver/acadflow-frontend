@@ -21,7 +21,8 @@ export type SignupInput = {
 
 async function getSessionService() {
   const response = await http.get("/auth/v1/session");
-  return response.data.data.user as User;
+  const data = response.data.data;
+  return (data.user ?? data) as User;
 }
 
 export async function loginService(email: string, password: string) {

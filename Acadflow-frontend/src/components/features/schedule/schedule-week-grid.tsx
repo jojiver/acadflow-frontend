@@ -11,6 +11,7 @@ const DAY_META: Record<Weekday, { label: string; date: string }> = {
   Wed: { label: "WED", date: "Oct 8" },
   Thu: { label: "THU", date: "Oct 9" },
   Fri: { label: "FRI", date: "Oct 10" },
+  Sat: { label: "SAT", date: "Oct 11" },
 };
 
 function toMinutes(time: string) {

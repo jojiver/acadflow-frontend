@@ -10,7 +10,7 @@ import { createScheduleService } from "@/services/schedule-service";
 import type { Weekday } from "@/services/schedule-service";
 import { getSubjectsService } from "@/services/subject-service";
 
-const DAYS: Weekday[] = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+const DAYS: Weekday[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 type ScheduleClassFormProps = {
   open: boolean;

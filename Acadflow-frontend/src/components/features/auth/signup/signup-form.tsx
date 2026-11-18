@@ -32,8 +32,8 @@ export function SignupForm() {
   const [studentId, setStudentId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [program, setProgram] = useState("");
-  const [yearLevel, setYearLevel] = useState("");
+  const [program, setProgram] = useState(PROGRAMS[0]);
+  const [yearLevel, setYearLevel] = useState(YEARS[1]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -116,9 +116,6 @@ export function SignupForm() {
             value={program}
             onChange={(event) => setProgram(event.target.value)}
           >
-            <option value="" disabled>
-              BS Information Technology
-            </option>
             {PROGRAMS.map((item) => (
               <option key={item} value={item}>
                 {item}
@@ -134,9 +131,6 @@ export function SignupForm() {
             value={yearLevel}
             onChange={(event) => setYearLevel(event.target.value)}
           >
-            <option value="" disabled>
-              2nd Year
-            </option>
             {YEARS.map((item) => (
               <option key={item} value={item}>
                 {item}
