@@ -1,18 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTasksService } from "@/services/task-service";
-import type { Task } from "@/lib/priority";
-
-type NotificationItem = {
-  id: string;
-  title: string;
-  message: string;
-  tone: "danger" | "warning" | "info";
-};
+import { useNotifications } from "@/hooks/use-notifications";
 
 const TOGGLES = [
   { key: "deadline", label: "Deadline reminders" },
@@ -22,7 +14,7 @@ const TOGGLES = [
 ] as const;
 
 export function Notifications() {
-  const [tasks, setTasks] = useState<Task[] | null>(null);
+  const { items, loading } = useNotifications();
   const [settings, setSettings] = useState<Record<string, boolean>>({
     deadline: true,
     class: true,
@@ -31,64 +23,7 @@ export function Notifications() {
   });
   const [timing, setTiming] = useState("1h");
 
-  useEffect(() => {
-    let active = true;
-
-    getTasksService()
-      .then((result) => {
-        if (active) setTasks(result);
-      })
-      .catch(() => {
-        if (active) setTasks([]);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const items = useMemo<NotificationItem[]>(() => {
-    const result: NotificationItem[] = [];
-
-    for (const task of tasks ?? []) {
-      if (task.completedAt) continue;
-      const days = task.priority.daysRemaining;
-
-      if (days < 0) {
-        result.push({
-          id: `${task.id}-overdue`,
-          title: "Overdue task",
-          message: `${task.title} was due ${Math.abs(days)} day${Math.abs(days) === 1 ? "" : "s"} ago.`,
-          tone: "danger",
-        });
-      } else if (days === 0) {
-        result.push({
-          id: `${task.id}-today`,
-          title: "Due today",
-          message: `${task.title} is due today.`,
-          tone: "warning",
-        });
-      } else if (days === 1) {
-        result.push({
-          id: `${task.id}-tomorrow`,
-          title: "Due tomorrow",
-          message: `${task.title} is due tomorrow.`,
-          tone: "info",
-        });
-      } else if (task.priority.level === "High") {
-        result.push({
-          id: `${task.id}-high`,
-          title: "High priority",
-          message: `${task.title} is now a high-priority task.`,
-          tone: "warning",
-        });
-      }
-    }
-
-    return result;
-  }, [tasks]);
-
-  if (tasks === null) {
+  if (loading) {
     return <Skeleton className="h-[420px] rounded-2xl" />;
   }
 

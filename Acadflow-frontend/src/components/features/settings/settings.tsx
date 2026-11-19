@@ -8,14 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { useAuth } from "@/components/context/use-auth";
 
-const PROGRAMS = [
-  "BS Information Technology",
-  "BS Computer Science",
-  "BS Information Systems",
-  "Other",
-];
+const PROGRAMS = ["BSIT", "BSCS", "BSIS", "Other"];
 
-const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"];
+const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 const TOGGLES = [
   { key: "deadline", label: "Deadline reminders" },

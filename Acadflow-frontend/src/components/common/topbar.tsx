@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useAuth } from "@/components/context/use-auth";
+import { useNotifications } from "@/hooks/use-notifications";
 import { cn } from "@/lib/cn";
 import type { Task } from "@/lib/priority";
 import { getSubjectsService } from "@/services/subject-service";
@@ -157,6 +158,7 @@ export function Topbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { count: notificationCount } = useNotifications();
   const { title, subtitle } = getPageMeta(pathname);
 
   const [query, setQuery] = useState("");
@@ -356,7 +358,9 @@ export function Topbar() {
           className="relative grid size-10 cursor-pointer place-items-center rounded-full border border-line bg-surface text-ink-2 transition-colors hover:border-brand hover:text-brand"
         >
           <BellIcon />
-          <span className="absolute top-2 right-2 size-2 rounded-full bg-high" />
+          {notificationCount > 0 && (
+            <span className="absolute top-2 right-2 size-2 rounded-full bg-high" />
+          )}
         </button>
 
         <button

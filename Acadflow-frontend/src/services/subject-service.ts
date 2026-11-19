@@ -10,6 +10,7 @@ export type Subject = {
   room?: string | null;
   schedule?: string | null;
   category: SubjectCategory;
+  color?: string | null;
   tasks: number;
   dueNow: number;
   progress: number;

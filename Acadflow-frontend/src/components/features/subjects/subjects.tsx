@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/cn";
 import { getErrorMessage } from "@/lib/errors";
@@ -36,11 +37,28 @@ const LEVEL_VARIANT = {
   Low: "low",
 } as const;
 
+const PRIORITY_RANK = {
+  High: 3,
+  Medium: 2,
+  Low: 1,
+} as const;
+
+const SORTS = [
+  { value: "progress", label: "Sort: Progress (high to low)" },
+  { value: "priority", label: "Sort: Priority (high to low)" },
+  { value: "due", label: "Sort: Due soon" },
+  { value: "tasks", label: "Sort: Most tasks" },
+  { value: "name", label: "Sort: Name (A-Z)" },
+] as const;
+
+type SortKey = (typeof SORTS)[number]["value"];
+
 export function Subjects() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") ?? "").trim().toLowerCase();
   const [subjects, setSubjects] = useState<Subject[] | null>(null);
   const [tab, setTab] = useState<Tab>("All");
+  const [sort, setSort] = useState<SortKey>("progress");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Subject | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
@@ -102,6 +120,50 @@ export function Subjects() {
 
     return list;
   }, [subjects, tab, searchQuery]);
+
+  const sorted = useMemo(() => {
+    const list = [...filtered];
+    const byName = (a: Subject, b: Subject) => a.name.localeCompare(b.name);
+
+    switch (sort) {
+      case "priority":
+        list.sort(
+          (a, b) =>
+            PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] ||
+            b.dueNow - a.dueNow ||
+            byName(a, b),
+        );
+        break;
+      case "due":
+        list.sort(
+          (a, b) =>
+            b.dueNow - a.dueNow ||
+            PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] ||
+            byName(a, b),
+        );
+        break;
+      case "tasks":
+        list.sort(
+          (a, b) =>
+            b.tasks - a.tasks ||
+            b.progress - a.progress ||
+            byName(a, b),
+        );
+        break;
+      case "name":
+        list.sort(byName);
+        break;
+      default:
+        list.sort(
+          (a, b) =>
+            b.progress - a.progress ||
+            PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] ||
+            byName(a, b),
+        );
+    }
+
+    return list;
+  }, [filtered, sort]);
 
   const active = (subjects ?? []).filter(
     (item) => item.category !== "Archived",
@@ -203,12 +265,18 @@ export function Subjects() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            className="h-10 rounded-xl px-4 text-[13px]"
+          <Select
+            aria-label="Sort subjects"
+            value={sort}
+            onChange={(event) => setSort(event.target.value as SortKey)}
+            className="h-10 w-[200px] rounded-xl text-[13px]"
           >
-            Sort: Progress ▾
-          </Button>
+            {SORTS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
           <Button className="h-10 rounded-xl px-4 text-[13px]" onClick={openCreate}>
             + New subject
           </Button>
@@ -236,7 +304,7 @@ export function Subjects() {
           </div>
 
           {GROUPS.map((group) => {
-            const rows = filtered.filter(
+            const rows = sorted.filter(
               (item) => item.category === group.category,
             );
             if (rows.length === 0) return null;
@@ -249,12 +317,12 @@ export function Subjects() {
                 <ul className="mt-2 space-y-2">
                   {rows.map((subject) => (
                     <li key={subject.id}>
-                      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5">
+                      <div className="group flex flex-wrap items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-brand/30 hover:bg-brand-tint/60">
                         <span className="size-4 shrink-0 rounded border border-line" />
                         <span className="size-2 shrink-0 rounded-sm bg-brand" />
 
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-ink">
+                          <p className="truncate text-sm font-medium text-ink group-hover:text-brand-dark">
                             {subject.name}
                           </p>
                           <p className="truncate text-[11px] text-ink-3">
@@ -283,21 +351,25 @@ export function Subjects() {
                           {subject.priority}
                         </Badge>
 
-                        <div className="flex shrink-0 gap-1.5">
-                          <Button
-                            variant="secondary"
-                            className="h-8 rounded-lg px-2.5 text-xs"
+                        <div className="flex w-[72px] shrink-0 justify-end gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+                          <button
+                            type="button"
                             onClick={() => openEdit(subject)}
+                            aria-label={`Edit ${subject.name}`}
+                            title="Edit subject"
+                            className="grid size-8 cursor-pointer place-items-center rounded-lg text-ink-2 transition-colors hover:bg-white hover:text-brand-dark"
                           >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            className="h-8 rounded-lg border-high/30 px-2.5 text-xs text-high hover:bg-[#FEE2E2]"
+                            <PencilIcon />
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => setConfirmId(subject.id)}
+                            aria-label={`Delete ${subject.name}`}
+                            title="Delete subject"
+                            className="grid size-8 cursor-pointer place-items-center rounded-lg text-ink-2 transition-colors hover:bg-[#FEE2E2] hover:text-high"
                           >
-                            Delete
-                          </Button>
+                            <TrashIcon />
+                          </button>
                         </div>
                       </div>
                     </li>
@@ -416,6 +488,41 @@ export function Subjects() {
         </div>
       </Modal>
     </div>
+  );
+}
+
+function PencilIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
+      <path d="M3 6h18" />
+      <path d="M8 6V4h8v2" />
+      <path d="M19 6l-1 14H6L5 6" />
+      <path d="M10 11v5" />
+      <path d="M14 11v5" />
+    </svg>
   );
 }
 

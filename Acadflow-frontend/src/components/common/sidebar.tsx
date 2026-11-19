@@ -1,29 +1,48 @@
+﻿import type { ComponentType } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import { cn } from "@/lib/cn";
 import { useAuth } from "@/components/context/use-auth";
+import { useNotifications } from "@/hooks/use-notifications";
+import {
+  BellIcon,
+  CalendarIcon,
+  DashboardIcon,
+  LogOutIcon,
+  ProductivityIcon,
+  ProfileIcon,
+  ScheduleIcon,
+  SettingsIcon,
+  SubjectsIcon,
+  TasksIcon,
+  WorkloadIcon,
+} from "./nav-icons";
 
 type NavItem = {
   to: string | null;
   label: string;
-  icon: string;
+  Icon: ComponentType<{ className?: string }>;
   end?: boolean;
   badge?: string;
 };
 
 const PRIMARY: NavItem[] = [
-  { to: "/user", label: "Dashboard", icon: "▦", end: true },
-  { to: "/user/schedule", label: "Schedule", icon: "☰" },
-  { to: "/user/subjects", label: "Subjects", icon: "◫" },
-  { to: "/user/tasks", label: "Tasks & Priorities", icon: "✓" },
-  { to: "/user/productivity", label: "Productivity", icon: "◔" },
-  { to: "/user/calendar", label: "Calendar", icon: "▤" },
-  { to: "/user/workload", label: "Workload", icon: "◧" },
+  { to: "/user", label: "Dashboard", Icon: DashboardIcon, end: true },
+  { to: "/user/schedule", label: "Schedule", Icon: ScheduleIcon },
+  { to: "/user/subjects", label: "Subjects", Icon: SubjectsIcon },
+  { to: "/user/tasks", label: "Tasks & Priorities", Icon: TasksIcon },
+  { to: "/user/productivity", label: "Productivity", Icon: ProductivityIcon },
+  { to: "/user/calendar", label: "Calendar", Icon: CalendarIcon },
+  { to: "/user/workload", label: "Workload", Icon: WorkloadIcon },
 ];
 
 const GENERAL: NavItem[] = [
-  { to: "/user/notifications", label: "Notifications", icon: "◉", badge: "3" },
-  { to: "/user/settings", label: "Settings", icon: "⚙" },
-  { to: "/user/profile", label: "Profile", icon: "◍" },
+  {
+    to: "/user/notifications",
+    label: "Notifications",
+    Icon: BellIcon,
+  },
+  { to: "/user/settings", label: "Settings", Icon: SettingsIcon },
+  { to: "/user/profile", label: "Profile", Icon: ProfileIcon },
 ];
 
 function getInitials(name?: string) {
@@ -37,11 +56,11 @@ function getInitials(name?: string) {
     .toUpperCase();
 }
 
-function SidebarItem({ to, label, icon, end, badge }: NavItem) {
+function SidebarItem({ to, label, Icon, end, badge }: NavItem) {
   const content = (
     <>
-      <span className="grid size-[26px] shrink-0 place-items-center rounded-lg bg-brand-tint text-[13px] text-brand">
-        {icon}
+      <span className="grid size-[26px] shrink-0 place-items-center rounded-lg bg-brand-tint text-brand">
+        <Icon className="size-[15px]" />
       </span>
       <span className="flex-1 truncate">{label}</span>
       {badge && (
@@ -83,7 +102,14 @@ function SidebarItem({ to, label, icon, end, badge }: NavItem) {
 
 export function Sidebar() {
   const { user, logout } = useAuth();
+  const { count: notificationCount } = useNotifications();
   const navigate = useNavigate();
+  const notificationBadge =
+    notificationCount > 0
+      ? notificationCount > 9
+        ? "9+"
+        : String(notificationCount)
+      : undefined;
 
   async function handleLogout() {
     try {
@@ -114,7 +140,15 @@ export function Sidebar() {
       </p>
       <nav className="space-y-1">
         {GENERAL.map((item) => (
-          <SidebarItem key={item.label} {...item} />
+          <SidebarItem
+            key={item.label}
+            {...item}
+            badge={
+              item.to === "/user/notifications"
+                ? notificationBadge
+                : undefined
+            }
+          />
         ))}
       </nav>
 
@@ -123,8 +157,8 @@ export function Sidebar() {
         onClick={handleLogout}
         className="mt-4 flex h-[42px] cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-medium text-ink-2 transition-colors hover:bg-brand-tint"
       >
-        <span className="grid size-[26px] place-items-center text-[14px]">
-          ↩
+        <span className="grid size-[26px] place-items-center">
+          <LogOutIcon className="size-[17px]" />
         </span>
         Log out
       </button>
@@ -138,8 +172,8 @@ export function Sidebar() {
             {user?.name ?? "Student"}
           </p>
           <p className="truncate text-xs text-ink-2">
-            {[user?.program, user?.yearLevel].filter(Boolean).join(" · ") ||
-              "BS IT · 2nd Year"}
+            {[user?.program, user?.yearLevel].filter(Boolean).join(" - ") ||
+              "BSIT - 4th Year"}
           </p>
         </div>
       </div>

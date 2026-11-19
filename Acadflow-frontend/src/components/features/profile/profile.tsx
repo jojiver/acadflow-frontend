@@ -36,7 +36,6 @@ export function Profile() {
   const high = (tasks ?? []).filter((task) => task.priority.level === "High").length;
 
   const fields = [
-    ["Student ID", user?.studentId || "Not set"],
     ["Program", user?.program || "Not set"],
     ["Year level", user?.yearLevel || "Not set"],
     ["Email", user?.email || "Not set"],

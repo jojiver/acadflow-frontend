@@ -6,14 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 
-const PROGRAMS = [
-  "BS Information Technology",
-  "BS Computer Science",
-  "BS Information Systems",
-  "Other",
-];
+const PROGRAMS = ["BSIT", "BSCS", "BSIS", "Other"];
 
-const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"];
+const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 function getErrorMessage(error: unknown) {
   if (typeof error === "object" && error !== null && "response" in error) {
@@ -29,20 +24,26 @@ export function SignupForm() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
-  const [studentId, setStudentId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [program, setProgram] = useState(PROGRAMS[0]);
-  const [yearLevel, setYearLevel] = useState(YEARS[1]);
+  const [yearLevel, setYearLevel] = useState(YEARS[0]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setBusy(true);
     try {
-      await signup({ name, studentId, email, program, yearLevel, password });
+      await signup({ name, email, program, yearLevel, password });
       navigate("/user", { replace: true });
     } catch (requestError) {
       setError(getErrorMessage(requestError));
@@ -66,29 +67,17 @@ export function SignupForm() {
         />
       </div>
 
-      <div className="grid gap-3.5 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="auth-student-id">Student ID</Label>
-          <Input
-            id="auth-student-id"
-            placeholder="2026-01234"
-            required
-            value={studentId}
-            onChange={(event) => setStudentId(event.target.value)}
-          />
-        </div>
-        <div>
-          <Label htmlFor="auth-email">Email</Label>
-          <Input
-            id="auth-email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@school.edu"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </div>
+      <div>
+        <Label htmlFor="auth-email">Email</Label>
+        <Input
+          id="auth-email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@school.edu"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
       </div>
 
       <div>
@@ -104,6 +93,22 @@ export function SignupForm() {
           title="At least 8 characters, with one uppercase letter and one number"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="auth-confirm-password">Confirm password</Label>
+        <Input
+          id="auth-confirm-password"
+          type="password"
+          autoComplete="new-password"
+          placeholder="Repeat your password"
+          required
+          minLength={8}
+          pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}"
+          title="Passwords must match"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
         />
       </div>
 

@@ -12,7 +12,6 @@ export type User = {
 
 export type SignupInput = {
   name: string;
-  studentId: string;
   email: string;
   program: string;
   yearLevel: string;
