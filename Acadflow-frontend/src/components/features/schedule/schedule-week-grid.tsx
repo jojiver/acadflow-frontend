@@ -38,12 +38,14 @@ type ScheduleWeekGridProps = {
   classes: ScheduleClass[];
   days: Weekday[];
   highlight?: Weekday;
+  onSelectClass?: (item: ScheduleClass) => void;
 };
 
 export function ScheduleWeekGrid({
   classes,
   days,
   highlight,
+  onSelectClass,
 }: ScheduleWeekGridProps) {
   return (
     <div className="overflow-hidden rounded-2xl border border-line bg-surface">
@@ -105,23 +107,30 @@ export function ScheduleWeekGrid({
                     const height = ((end - start) / 60) * HOUR_HEIGHT;
 
                     return (
-                      <div
+                      <button
                         key={item.id}
-                        className="absolute inset-x-1.5 overflow-hidden rounded-xl border border-line bg-brand-tint px-2.5 py-2"
+                        type="button"
+                        title={onSelectClass ? "Click to edit class" : undefined}
+                        onClick={() => onSelectClass?.(item)}
+                        className={cn(
+                          "absolute inset-x-1.5 overflow-hidden rounded-xl border border-line bg-brand-tint px-2.5 py-2 text-left transition-shadow",
+                          onSelectClass &&
+                            "cursor-pointer hover:ring-2 hover:ring-brand/40",
+                        )}
                         style={{ top, height: height - 2 }}
                       >
                         <p className="truncate text-[13px] font-semibold text-ink">
                           {item.subject}
                         </p>
                         <p className="mt-0.5 text-[11px] text-ink-2">
-                          {formatTime(item.start)} – {formatTime(item.end)}
+                          {formatTime(item.start)} - {formatTime(item.end)}
                         </p>
                         {item.room && (
                           <p className="mt-0.5 truncate text-[11px] text-ink-3">
                             {item.room}
                           </p>
                         )}
-                      </div>
+                      </button>
                     );
                   })}
               </div>

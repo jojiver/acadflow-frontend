@@ -6,31 +6,40 @@ import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { getErrorMessage } from "@/lib/errors";
-import { createScheduleService } from "@/services/schedule-service";
-import type { Weekday } from "@/services/schedule-service";
+import {
+  createScheduleService,
+  deleteScheduleService,
+  updateScheduleService,
+} from "@/services/schedule-service";
+import type { ScheduleClass, Weekday } from "@/services/schedule-service";
 import { getSubjectsService } from "@/services/subject-service";
 
 const DAYS: Weekday[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 type ScheduleClassFormProps = {
   open: boolean;
+  initial?: ScheduleClass | null;
   onClose: () => void;
-  onCreated: () => void;
+  onSaved: () => void;
+  onDeleted: () => void;
 };
 
 export function ScheduleClassForm({
   open,
+  initial,
   onClose,
-  onCreated,
+  onSaved,
+  onDeleted,
 }: ScheduleClassFormProps) {
   const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
-  const [subjectId, setSubjectId] = useState("");
-  const [day, setDay] = useState<Weekday>("Mon");
-  const [startTime, setStartTime] = useState("08:00");
-  const [endTime, setEndTime] = useState("10:00");
-  const [room, setRoom] = useState("");
+  const [subjectId, setSubjectId] = useState(initial?.subjectId ?? "");
+  const [day, setDay] = useState<Weekday>(initial?.day ?? "Mon");
+  const [startTime, setStartTime] = useState(initial?.start ?? "08:00");
+  const [endTime, setEndTime] = useState(initial?.end ?? "10:00");
+  const [room, setRoom] = useState(initial?.room ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -69,15 +78,21 @@ export function ScheduleClassForm({
 
     setBusy(true);
     try {
-      await createScheduleService({
+      const input = {
         subjectId,
         day,
         startTime,
         endTime,
         room: room.trim() || undefined,
-      });
-      setRoom("");
-      onCreated();
+      };
+
+      if (initial) {
+        await updateScheduleService(initial.id, input);
+      } else {
+        await createScheduleService(input);
+      }
+
+      onSaved();
     } catch (requestError) {
       setError(getErrorMessage(requestError));
     } finally {
@@ -85,8 +100,29 @@ export function ScheduleClassForm({
     }
   }
 
+  async function handleDelete() {
+    if (!initial) return;
+
+    setBusy(true);
+    setError("");
+
+    try {
+      await deleteScheduleService(initial.id);
+      onDeleted();
+    } catch (requestError) {
+      setError(getErrorMessage(requestError));
+      setConfirmDelete(false);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
-    <Modal open={open} onClose={onClose} title="Add class">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={initial ? "Edit class" : "Add class"}
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         {subjects.length === 0 && (
           <p className="rounded-lg bg-brand-tint p-3 text-sm text-ink-2">
@@ -160,19 +196,61 @@ export function ScheduleClassForm({
           />
         </div>
 
+        {confirmDelete && (
+          <div className="rounded-lg bg-[#FEE2E2] p-3">
+            <p className="text-sm font-semibold text-ink">
+              Delete this class?
+            </p>
+            <p className="mt-0.5 text-xs text-ink-2">
+              This removes it from your schedule and calendar.
+            </p>
+            <div className="mt-3 flex justify-end gap-2">
+              <Button
+                variant="secondary"
+                onClick={() => setConfirmDelete(false)}
+                disabled={busy}
+              >
+                Keep class
+              </Button>
+              <Button
+                className="bg-high hover:bg-[#DC2626]"
+                onClick={handleDelete}
+                disabled={busy}
+              >
+                {busy ? "Deleting..." : "Delete class"}
+              </Button>
+            </div>
+          </div>
+        )}
+
         {error && (
           <p role="alert" className="text-sm text-high">
             {error}
           </p>
         )}
 
-        <div className="flex justify-end gap-2 pt-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={busy || subjects.length === 0}>
-            {busy ? "Saving…" : "Add class"}
-          </Button>
+        <div className="flex items-center justify-between gap-2 pt-2">
+          {initial ? (
+            <Button
+              variant="secondary"
+              className="border-high/30 text-high hover:bg-[#FEE2E2]"
+              onClick={() => setConfirmDelete(true)}
+              disabled={busy || confirmDelete}
+            >
+              Delete class
+            </Button>
+          ) : (
+            <span />
+          )}
+
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={onClose} disabled={busy}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={busy || subjects.length === 0}>
+              {busy ? "Saving..." : initial ? "Save changes" : "Add class"}
+            </Button>
+          </div>
         </div>
       </form>
     </Modal>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -21,6 +21,7 @@ export function Schedule() {
   const [view, setView] = useState<View>("Week");
   const [classes, setClasses] = useState<ScheduleClass[] | null>(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<ScheduleClass | null>(null);
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -76,20 +77,23 @@ export function Schedule() {
             className="h-10 rounded-xl px-4 text-[13px]"
             disabled={isEmpty}
           >
-            All subjects ▾
+            All subjects â–¾
           </Button>
           <Button
             variant="secondary"
             className="h-10 rounded-xl px-4 text-[13px]"
-            onClick={() => setFormOpen(true)}
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
           >
-            ＋ Add class
+            + Add class
           </Button>
           <Button
             className="h-10 rounded-xl bg-brand-dark px-4 text-[13px] hover:bg-brand"
             onClick={() => navigate("/user/schedule/import")}
           >
-            ⇪ Import schedule
+            â‡ª Import schedule
           </Button>
         </div>
       </div>
@@ -108,7 +112,7 @@ export function Schedule() {
           description="Add your first class or import your timetable to build your week."
           action={
             <div className="flex flex-wrap justify-center gap-2">
-              <Button onClick={() => setFormOpen(true)}>＋ Add class</Button>
+              <Button onClick={() => { setEditing(null); setFormOpen(true); }}>+ Add class</Button>
               <Button
                 variant="secondary"
                 onClick={() => navigate("/user/schedule/import")}
@@ -124,18 +128,33 @@ export function Schedule() {
         <ScheduleWeekGrid
           classes={classes}
           days={view === "Day" ? ["Mon"] : WEEK}
+          onSelectClass={(item) => {
+            setEditing(item);
+            setFormOpen(true);
+          }}
         />
       )}
 
       <ScheduleClassForm
-        key={formOpen ? "open" : "closed"}
+        key={`${editing?.id ?? "new"}-${formOpen ? "open" : "closed"}`}
         open={formOpen}
-        onClose={() => setFormOpen(false)}
-        onCreated={() => {
+        initial={editing}
+        onClose={() => {
           setFormOpen(false);
+          setEditing(null);
+        }}
+        onSaved={() => {
+          setFormOpen(false);
+          setEditing(null);
+          setReloadKey((key) => key + 1);
+        }}
+        onDeleted={() => {
+          setFormOpen(false);
+          setEditing(null);
           setReloadKey((key) => key + 1);
         }}
       />
     </div>
   );
 }
+

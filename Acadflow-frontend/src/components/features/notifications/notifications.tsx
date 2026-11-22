@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNotifications } from "@/hooks/use-notifications";
+import { getErrorMessage } from "@/lib/errors";
+import {
+  DEFAULT_PREFERENCES,
+  getPreferencesService,
+  updatePreferencesService,
+} from "@/services/settings-service";
+import type { Preferences } from "@/services/settings-service";
 
 const TOGGLES = [
   { key: "deadline", label: "Deadline reminders" },
@@ -15,13 +22,41 @@ const TOGGLES = [
 
 export function Notifications() {
   const { items, loading } = useNotifications();
-  const [settings, setSettings] = useState<Record<string, boolean>>({
-    deadline: true,
-    class: true,
-    priority: true,
-    workload: true,
-  });
-  const [timing, setTiming] = useState("1h");
+  const [preferences, setPreferences] =
+    useState<Preferences>(DEFAULT_PREFERENCES);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    getPreferencesService()
+      .then((result) => {
+        if (active) setPreferences(result);
+      })
+      .catch(() => {
+        // Keep defaults when preferences cannot be loaded.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  function savePreferences(next: Preferences) {
+    const previous = preferences;
+    setPreferences(next);
+    setError("");
+
+    updatePreferencesService(next)
+      .then((saved) => {
+        setPreferences(saved);
+        window.dispatchEvent(new Event("notifications:refresh"));
+      })
+      .catch((requestError) => {
+        setPreferences(previous);
+        setError(getErrorMessage(requestError));
+      });
+  }
 
   if (loading) {
     return <Skeleton className="h-[420px] rounded-2xl" />;
@@ -77,17 +112,17 @@ export function Notifications() {
           {TOGGLES.map((toggle) => (
             <li key={toggle.key}>
               <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-2">
-                <input
-                  type="checkbox"
-                  checked={settings[toggle.key]}
-                  onChange={(event) =>
-                    setSettings((current) => ({
-                      ...current,
-                      [toggle.key]: event.target.checked,
-                    }))
-                  }
-                  className="size-4 rounded border-line accent-brand"
-                />
+                    <input
+                      type="checkbox"
+                      checked={preferences[toggle.key]}
+                      onChange={(event) =>
+                        savePreferences({
+                          ...preferences,
+                          [toggle.key]: event.target.checked,
+                        })
+                      }
+                      className="size-4 rounded border-line accent-brand"
+                    />
                 {toggle.label}
               </label>
             </li>
@@ -99,8 +134,13 @@ export function Notifications() {
             Remind me
           </p>
           <Select
-            value={timing}
-            onChange={(event) => setTiming(event.target.value)}
+            value={preferences.timing}
+            onChange={(event) =>
+              savePreferences({
+                ...preferences,
+                timing: event.target.value as Preferences["timing"],
+              })
+            }
           >
             <option value="30m">30 minutes before</option>
             <option value="1h">1 hour before</option>
@@ -109,8 +149,14 @@ export function Notifications() {
           </Select>
         </div>
 
+        {error && (
+          <p role="alert" className="mt-3 text-xs text-high">
+            {error}
+          </p>
+        )}
+
         <p className="mt-4 text-[11px] text-ink-3">
-          Preferences are saved for this session.
+          Preferences are saved to your account.
         </p>
       </Card>
     </div>

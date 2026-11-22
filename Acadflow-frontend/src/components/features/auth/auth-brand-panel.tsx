@@ -52,7 +52,7 @@ export function AuthBrandPanel() {
       </div>
 
       <p className="relative text-[13px] text-[#CBD5E1]">
-        MyStudyLife helps students organize. AcadFlow decides what comes first.
+        Acadflow helps students organize. AcadFlow decides what comes first.
       </p>
     </aside>
   );

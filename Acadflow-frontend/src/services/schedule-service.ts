@@ -4,6 +4,7 @@ export type Weekday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
 export type ScheduleClass = {
   id: string;
+  subjectId: string;
   subject: string;
   day: Weekday;
   start: string;
@@ -54,6 +55,7 @@ export type ImportConfirmResult = {
 
 type ApiSchedule = {
   id: string;
+  subjectId: string;
   subjectName: string | null;
   day: Weekday;
   startTime: string;
@@ -73,6 +75,7 @@ export async function getScheduleService(): Promise<ScheduleClass[]> {
   const response = await http.get("/schedules/v1/get-schedules");
   return (response.data.data.schedules as ApiSchedule[]).map((item) => ({
     id: item.id,
+    subjectId: item.subjectId,
     subject: item.subjectName ?? "Class",
     day: item.day,
     start: item.startTime,
@@ -84,6 +87,18 @@ export async function getScheduleService(): Promise<ScheduleClass[]> {
 export async function createScheduleService(input: ScheduleInput) {
   const response = await http.post("/schedules/v1/create-schedule", input);
   return response.data.data.schedule as { id: string };
+}
+
+export async function updateScheduleService(
+  id: string,
+  input: ScheduleInput,
+) {
+  const response = await http.post(`/schedules/v1/update-schedule/${id}`, input);
+  return response.data.data.schedule as { id: string };
+}
+
+export async function deleteScheduleService(id: string): Promise<void> {
+  await http.post(`/schedules/v1/delete-schedule/${id}`, {});
 }
 
 export async function previewScheduleImportService(

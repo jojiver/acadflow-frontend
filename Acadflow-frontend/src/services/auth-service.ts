@@ -8,6 +8,7 @@ export type User = {
   studentId?: string | null;
   program?: string | null;
   yearLevel?: string | null;
+  academicTerm?: string | null;
 };
 
 export type SignupInput = {

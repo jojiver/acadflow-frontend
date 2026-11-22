@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { useAuth } from "@/components/context/use-auth";
+import { getErrorMessage } from "@/lib/errors";
+import {
+  changePasswordService,
+  DEFAULT_PREFERENCES,
+  getPreferencesService,
+  updatePreferencesService,
+  updateProfileService,
+} from "@/services/settings-service";
+import type { Preferences } from "@/services/settings-service";
 
 const PROGRAMS = ["BSIT", "BSCS", "BSIS", "Other"];
 
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
+
+const TERMS = ["1st Semester", "2nd Semester", "Summer"];
 
 const TOGGLES = [
   { key: "deadline", label: "Deadline reminders" },
@@ -20,33 +31,106 @@ const TOGGLES = [
 ] as const;
 
 export function Settings() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
 
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [program, setProgram] = useState(user?.program ?? PROGRAMS[0]);
   const [yearLevel, setYearLevel] = useState(user?.yearLevel ?? YEARS[0]);
-  const [term, setTerm] = useState("1st Semester");
-  const [toggles, setToggles] = useState<Record<string, boolean>>({
-    deadline: true,
-    class: true,
-    priority: true,
-    workload: true,
-  });
-  const [timing, setTiming] = useState("1h");
+  const [term, setTerm] = useState(user?.academicTerm ?? TERMS[0]);
+  const [preferences, setPreferences] =
+    useState<Preferences>(DEFAULT_PREFERENCES);
+  const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSave() {
-    setSaved(true);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordBusy, setPasswordBusy] = useState(false);
+  const [passwordSaved, setPasswordSaved] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    getPreferencesService()
+      .then((result) => {
+        if (active) setPreferences(result);
+      })
+      .catch(() => {
+        // Keep defaults when preferences cannot be loaded.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleSave() {
+    setBusy(true);
+    setError("");
+    setSaved(false);
+
+    try {
+      await updateProfileService({
+        name: name.trim(),
+        email: email.trim(),
+        program,
+        yearLevel,
+        academicTerm: term,
+      });
+      await updatePreferencesService(preferences);
+      await refreshUser();
+      window.dispatchEvent(new Event("notifications:refresh"));
+      setSaved(true);
+    } catch (requestError) {
+      setError(getErrorMessage(requestError));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handlePasswordChange() {
+    setPasswordError("");
+    setPasswordSaved(false);
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    setPasswordBusy(true);
+
+    try {
+      await changePasswordService({
+        currentPassword,
+        password: newPassword,
+        passwordConfirmation: confirmPassword,
+      });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSaved(true);
+    } catch (requestError) {
+      setPasswordError(getErrorMessage(requestError));
+    } finally {
+      setPasswordBusy(false);
+    }
   }
 
   return (
     <div className="space-y-5">
       {saved && (
-        <Alert tone="success" title="Preferences saved">
-          These settings are saved for this session. Account updates need the
-          backend profile endpoint.
+        <Alert tone="success" title="Settings saved">
+          Your profile and notification preferences are saved to your account.
         </Alert>
+      )}
+
+      {error && (
+        <p role="alert" className="text-sm text-high">
+          {error}
+        </p>
       )}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
@@ -72,13 +156,69 @@ export function Settings() {
                 />
               </div>
             </div>
-            <div className="mt-4">
-              <Label htmlFor="settings-password">Password</Label>
-              <Input
-                id="settings-password"
-                type="password"
-                placeholder="Leave blank to keep current password"
-              />
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="text-sm font-bold text-ink">Password</h2>
+            <div className="mt-4 space-y-4">
+              <div>
+                <Label htmlFor="settings-current-password">
+                  Current password
+                </Label>
+                <Input
+                  id="settings-current-password"
+                  type="password"
+                  autoComplete="current-password"
+                  value={currentPassword}
+                  onChange={(event) => setCurrentPassword(event.target.value)}
+                />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="settings-new-password">New password</Label>
+                  <Input
+                    id="settings-new-password"
+                    type="password"
+                    autoComplete="new-password"
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="settings-confirm-password">
+                    Confirm new password
+                  </Label>
+                  <Input
+                    id="settings-confirm-password"
+                    type="password"
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                  />
+                </div>
+              </div>
+
+              {passwordError && (
+                <p role="alert" className="text-sm text-high">
+                  {passwordError}
+                </p>
+              )}
+
+              {passwordSaved && (
+                <p className="text-sm text-low">
+                  Password updated.
+                </p>
+              )}
+
+              <div className="flex justify-end">
+                <Button
+                  variant="secondary"
+                  onClick={handlePasswordChange}
+                  disabled={passwordBusy}
+                >
+                  {passwordBusy ? "Updating..." : "Update password"}
+                </Button>
+              </div>
             </div>
           </Card>
 
@@ -121,9 +261,11 @@ export function Settings() {
                 value={term}
                 onChange={(event) => setTerm(event.target.value)}
               >
-                <option value="1st Semester">1st Semester</option>
-                <option value="2nd Semester">2nd Semester</option>
-                <option value="Summer">Summer</option>
+                {TERMS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
               </Select>
             </div>
           </Card>
@@ -138,9 +280,9 @@ export function Settings() {
                   <label className="flex cursor-pointer items-center gap-3 text-sm text-ink-2">
                     <input
                       type="checkbox"
-                      checked={toggles[toggle.key]}
+                      checked={preferences[toggle.key]}
                       onChange={(event) =>
-                        setToggles((current) => ({
+                        setPreferences((current) => ({
                           ...current,
                           [toggle.key]: event.target.checked,
                         }))
@@ -156,8 +298,13 @@ export function Settings() {
               <Label htmlFor="settings-timing">Remind me</Label>
               <Select
                 id="settings-timing"
-                value={timing}
-                onChange={(event) => setTiming(event.target.value)}
+                value={preferences.timing}
+                onChange={(event) =>
+                  setPreferences((current) => ({
+                    ...current,
+                    timing: event.target.value as Preferences["timing"],
+                  }))
+                }
               >
                 <option value="30m">30 minutes before</option>
                 <option value="1h">1 hour before</option>
@@ -185,8 +332,8 @@ export function Settings() {
             </div>
           </Card>
 
-          <Button className="w-full" onClick={handleSave}>
-            Save changes
+          <Button className="w-full" onClick={handleSave} disabled={busy}>
+            {busy ? "Saving..." : "Save changes"}
           </Button>
         </div>
       </div>

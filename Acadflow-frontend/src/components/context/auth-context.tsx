@@ -33,6 +33,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const currentUser = await restoreSessionService();
+      setUser(currentUser);
+      return currentUser;
+    } catch {
+      return null;
+    }
+  }, []);
+
   useEffect(() => {
     let mounted = true;
 
@@ -63,8 +73,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, ready, login, signup, logout }),
-    [user, ready, login, signup, logout],
+    () => ({ user, ready, login, signup, logout, refreshUser }),
+    [user, ready, login, signup, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

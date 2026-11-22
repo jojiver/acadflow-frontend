@@ -38,6 +38,7 @@ export function Profile() {
   const fields = [
     ["Program", user?.program || "Not set"],
     ["Year level", user?.yearLevel || "Not set"],
+    ["Academic term", user?.academicTerm || "Not set"],
     ["Email", user?.email || "Not set"],
   ];
 
