@@ -5,11 +5,13 @@ import { createTaskService } from "@/services/task-service";
 import type { TaskInput } from "@/services/task-service";
 import { TaskForm } from "./task-form";
 
+/** Renders the TaskCreate component. */
 export function TaskCreate() {
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  /** Handles form submission, validation and errors. */
   async function handleSubmit(input: TaskInput) {
     setBusy(true);
     setError("");

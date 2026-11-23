@@ -15,6 +15,7 @@ const REASONS = [
   "Workload is heaviest this week",
 ];
 
+/** Renders the PrioritySection component. */
 export function PrioritySection() {
   const navigate = useNavigate();
 

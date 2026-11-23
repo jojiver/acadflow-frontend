@@ -6,6 +6,7 @@ type LabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
   error?: boolean | string;
 };
 
+/** Renders the Label component. */
 export function Label({ className, children, error, ...props }: LabelProps) {
   return (
     <label

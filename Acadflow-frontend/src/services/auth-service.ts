@@ -19,12 +19,14 @@ export type SignupInput = {
   password: string;
 };
 
+/** Fetches the current session user from the API. */
 async function getSessionService() {
   const response = await http.get("/auth/v1/session");
   const data = response.data.data;
   return (data.user ?? data) as User;
 }
 
+/** Logs in and returns the authenticated user. */
 export async function loginService(email: string, password: string) {
   await ensureCsrfToken();
   await http.post("/auth/v1/login", { email, password });
@@ -32,17 +34,20 @@ export async function loginService(email: string, password: string) {
   return getSessionService();
 }
 
+/** Creates an account and returns the authenticated user. */
 export async function signupService(input: SignupInput) {
   await ensureCsrfToken();
   await http.post("/auth/v1/signup", input);
   return loginService(input.email, input.password);
 }
 
+/** Logs out and clears the client CSRF token. */
 export async function logoutService() {
   await http.post("/auth/v1/logout", {});
   clearCsrfToken();
 }
 
+/** Restores the current user from the session cookie. */
 export async function restoreSessionService() {
   return getSessionService();
 }

@@ -5,6 +5,7 @@ type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   error?: string;
 };
 
+/** Renders the Textarea component. */
 export function Textarea({ className, error, ...props }: TextareaProps) {
   return (
     <div>

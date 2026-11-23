@@ -47,6 +47,7 @@ const QUOTES = [
   },
 ];
 
+/** Renders the TestimonialsPage component. */
 export function TestimonialsPage() {
   return (
     <>

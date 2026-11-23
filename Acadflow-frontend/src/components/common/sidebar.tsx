@@ -45,6 +45,7 @@ const GENERAL: NavItem[] = [
   { to: "/user/profile", label: "Profile", Icon: ProfileIcon },
 ];
 
+/** Builds avatar initials from a name. */
 function getInitials(name?: string) {
   if (!name) return "JS";
   return name
@@ -56,6 +57,7 @@ function getInitials(name?: string) {
     .toUpperCase();
 }
 
+/** Renders the SidebarItem component. */
 function SidebarItem({ to, label, Icon, end, badge }: NavItem) {
   const content = (
     <>
@@ -100,6 +102,7 @@ function SidebarItem({ to, label, Icon, end, badge }: NavItem) {
   );
 }
 
+/** Renders the Sidebar component. */
 export function Sidebar() {
   const { user, logout } = useAuth();
   const { count: notificationCount } = useNotifications();
@@ -111,6 +114,7 @@ export function Sidebar() {
         : String(notificationCount)
       : undefined;
 
+  /** Logs out and returns to the login page. */
   async function handleLogout() {
     try {
       await logout();

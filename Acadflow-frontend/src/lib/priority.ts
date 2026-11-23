@@ -45,6 +45,7 @@ export type Task = {
   priority: Priority;
 };
 
+/** Returns a short deadline label from days remaining. */
 export function deadlineNote(daysRemaining: number): string {
   if (daysRemaining < 0) return `${Math.abs(daysRemaining)}d overdue`;
   if (daysRemaining === 0) return "Due today";

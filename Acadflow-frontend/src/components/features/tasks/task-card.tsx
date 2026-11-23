@@ -8,6 +8,7 @@ import type { Priority, Task } from "@/lib/priority";
 const LEVEL_VARIANT = { High: "high", Medium: "medium", Low: "low" } as const;
 const TONE = { High: "rose", Medium: "amber", Low: "emerald" } as const;
 
+/** Renders the TaskCard component. */
 export function TaskCard({
   task,
   priority,

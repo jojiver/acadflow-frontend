@@ -31,11 +31,13 @@ export const DEFAULT_PREFERENCES: Preferences = {
   timing: "1h",
 };
 
+/** Fetches saved notification preferences. */
 export async function getPreferencesService(): Promise<Preferences> {
   const response = await http.get("/settings/v1/preferences");
   return response.data.data.preferences as Preferences;
 }
 
+/** Saves notification preferences to the account. */
 export async function updatePreferencesService(
   input: Preferences,
 ): Promise<Preferences> {
@@ -43,6 +45,7 @@ export async function updatePreferencesService(
   return response.data.data.preferences as Preferences;
 }
 
+/** Saves profile and academic details. */
 export async function updateProfileService(
   input: ProfileInput,
 ): Promise<User> {
@@ -50,6 +53,7 @@ export async function updateProfileService(
   return response.data.data.user as User;
 }
 
+/** Changes the current account password. */
 export async function changePasswordService(
   input: PasswordInput,
 ): Promise<void> {

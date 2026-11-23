@@ -8,6 +8,7 @@ import {
   signupService,
 } from "@/services/auth-service";
 
+/** Provides authentication state and actions to the app. */
 export function AuthProvider({ children }: { children: ReactNode }) {
   // null means there is no signed-in user in the frontend state.
   const [user, setUser] = useState<User | null>(null);
@@ -46,12 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
+    /** Clears the user when the session expires. */
     function onExpired() {
       setUser(null);
     }
 
     window.addEventListener("auth:expired", onExpired);
 
+    /** Handles restore session in auth-context.tsx. */
     async function restoreSession() {
       try {
         const currentUser = await restoreSessionService();

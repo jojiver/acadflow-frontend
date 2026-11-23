@@ -9,6 +9,7 @@ import type { Subject } from "@/services/subject-service";
 import { getTasksService } from "@/services/task-service";
 import type { Task } from "@/lib/priority";
 
+/** Renders the Profile component. */
 export function Profile() {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[] | null>(null);
@@ -95,6 +96,7 @@ export function Profile() {
   );
 }
 
+/** Renders the Stat component. */
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <Card className="p-5">

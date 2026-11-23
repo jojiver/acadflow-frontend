@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 
+/** Renders the CtaSection component. */
 export function CtaSection() {
   const navigate = useNavigate();
 

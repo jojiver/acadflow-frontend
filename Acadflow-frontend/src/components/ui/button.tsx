@@ -12,6 +12,7 @@ const variants = {
   tertiary: "text-brand hover:text-brand-dark",
 };
 
+/** Renders the Button component. */
 export function Button({
   variant = "primary",
   className,

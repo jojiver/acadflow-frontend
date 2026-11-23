@@ -19,6 +19,7 @@ type FeatureCardProps = {
   children?: ReactNode;
 };
 
+/** Renders the FeatureCard component. */
 function FeatureCard({
   eyebrow,
   title,
@@ -51,6 +52,7 @@ function FeatureCard({
   );
 }
 
+/** Renders the FeaturesSection component. */
 export function FeaturesSection() {
   const navigate = useNavigate();
 

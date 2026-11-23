@@ -6,6 +6,7 @@ type TaskCollectionProps = {
   items: { task: Task; priority: Priority }[];
 };
 
+/** Renders the TaskCollection component. */
 export function TaskCollection({ items }: TaskCollectionProps) {
   if (items.length === 0) {
     return (

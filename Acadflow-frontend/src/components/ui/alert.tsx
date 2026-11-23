@@ -17,6 +17,7 @@ type AlertProps = HTMLAttributes<HTMLDivElement> & {
   action?: ReactNode;
 };
 
+/** Renders the Alert component. */
 export function Alert({
   tone = "info",
   title,

@@ -23,14 +23,17 @@ const authEndpoints = [
   "/auth/v1/logout",
 ];
 
+/** Checks whether a URL is an authentication endpoint. */
 function isAuthEndpoint(url = "") {
   return authEndpoints.includes(url);
 }
 
+/** Clears the in-memory CSRF token. */
 export function clearCsrfToken() {
   csrfToken = null;
 }
 
+/** Fetches a CSRF token once and caches it. */
 export async function ensureCsrfToken() {
   if (csrfToken) return;
 
@@ -40,6 +43,7 @@ export async function ensureCsrfToken() {
   csrfToken = response.data.data.csrfToken as string;
 }
 
+/** Handles refresh session in axios.ts. */
 async function refreshSession() {
   await http.post("/auth/v1/refresh-token", {});
   await ensureCsrfToken();

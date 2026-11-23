@@ -32,6 +32,7 @@ const TONE: Record<PriorityLevel, "rose" | "amber" | "emerald"> = {
 
 const XP_PER_LEVEL = 500;
 
+/** Maps a task into an editable API payload. */
 function toInput(task: Task): TaskInput {
   return {
     title: task.title,
@@ -48,6 +49,7 @@ function toInput(task: Task): TaskInput {
   };
 }
 
+/** Renders the ProgressRing component. */
 function ProgressRing({ value }: { value: number }) {
   const radius = 42;
   const circumference = 2 * Math.PI * radius;
@@ -84,6 +86,7 @@ function ProgressRing({ value }: { value: number }) {
   );
 }
 
+/** Renders the Dashboard component. */
 export function Dashboard() {
   const navigate = useNavigate();
 
@@ -105,6 +108,7 @@ export function Dashboard() {
         if (active) setTasks([]);
       });
 
+    /** Marks an async effect as inactive on unmount. */
     function cleanup() {
       active = false;
     }
@@ -128,11 +132,13 @@ export function Dashboard() {
     };
   }, []);
 
+  /** Handles refresh in dashboard.tsx. */
   async function refresh() {
     const result = await getTasksService();
     setTasks(result);
   }
 
+  /** Handles mark done in dashboard.tsx. */
   async function markDone(task: Task) {
     setSavingId(task.id);
     setError("");
@@ -151,6 +157,7 @@ export function Dashboard() {
     }
   }
 
+  /** Handles remove task in dashboard.tsx. */
   async function removeTask(id: string) {
     setBusy(true);
     setError("");
@@ -460,6 +467,7 @@ export function Dashboard() {
   );
 }
 
+/** Renders the MiniStat component. */
 function MiniStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-xl bg-brand-tint p-3">

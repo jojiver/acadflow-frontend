@@ -24,6 +24,7 @@ type ScheduleClassFormProps = {
   onDeleted: () => void;
 };
 
+/** Renders the ScheduleClassForm component. */
 export function ScheduleClassForm({
   open,
   initial,
@@ -62,6 +63,7 @@ export function ScheduleClassForm({
     };
   }, [open]);
 
+  /** Handles form submission, validation and errors. */
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
@@ -100,6 +102,7 @@ export function ScheduleClassForm({
     }
   }
 
+  /** Handles handle delete in schedule-class-form.tsx. */
   async function handleDelete() {
     if (!initial) return;
 

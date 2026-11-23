@@ -39,16 +39,19 @@ const TONES = {
   rose: "bg-high",
 } as const;
 
+/** Returns the start of a local day. */
 function startOfDay(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+/** Returns a date shifted by a number of days. */
 function addDays(date: Date, days: number) {
   const next = new Date(date);
   next.setDate(next.getDate() + days);
   return next;
 }
 
+/** Formats a date as a local YYYY-MM-DD key. */
 function toKey(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -56,15 +59,18 @@ function toKey(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+/** Converts a date key back into a local Date. */
 function dateFromKey(key: string) {
   const [year, month, day] = key.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
 
+/** Returns the Monday-first weekday index. */
 function mondayIndex(date: Date) {
   return (date.getDay() + 6) % 7;
 }
 
+/** Formats a date for the activity inspector. */
 function formatDay(date: Date) {
   return date.toLocaleDateString("en-US", {
     weekday: "short",
@@ -73,6 +79,7 @@ function formatDay(date: Date) {
   });
 }
 
+/** Maps a day's activity to a heatmap intensity. */
 function levelFor(tasks: number, hours: number) {
   if (tasks === 0) return 0;
   if (tasks >= 3 || hours >= 6) return 4;
@@ -81,6 +88,7 @@ function levelFor(tasks: number, hours: number) {
   return 1;
 }
 
+/** Renders the Productivity component. */
 export function Productivity() {
   const [period, setPeriod] = useState<Period>("week");
   const [tasks, setTasks] = useState<Task[] | null>(null);
@@ -501,6 +509,7 @@ export function Productivity() {
   );
 }
 
+/** Renders the Metric component. */
 function Metric({
   label,
   value,

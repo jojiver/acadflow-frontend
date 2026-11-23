@@ -38,6 +38,7 @@ type CalendarPrefs = {
   colors: Record<string, string>;
 };
 
+/** Loads calendar preferences from local storage. */
 function loadPrefs(): CalendarPrefs {
   if (typeof window === "undefined") {
     return { colorCode: true, colors: {} };
@@ -67,6 +68,7 @@ function loadPrefs(): CalendarPrefs {
   }
 }
 
+/** Produces a stable fallback color for a subject. */
 function colorFromName(name: string) {
   let hash = 0;
   for (const character of name) {
@@ -75,18 +77,22 @@ function colorFromName(name: string) {
   return PALETTE[Math.abs(hash) % PALETTE.length];
 }
 
+/** Returns a light tint of a hex color. */
 function tint(color: string) {
   return /^#[0-9a-f]{6}$/i.test(color) ? `${color}14` : "#6266F014";
 }
 
+/** Pads a number with a leading zero. */
 function pad(value: number) {
   return String(value).padStart(2, "0");
 }
 
+/** Formats a date as a local YYYY-MM-DD key. */
 function toKey(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
+/** Renders the Calendar component. */
 export function Calendar() {
   const [tasks, setTasks] = useState<Task[] | null>(null);
   const [classes, setClasses] = useState<ScheduleClass[]>([]);
@@ -168,6 +174,7 @@ export function Calendar() {
     return { byId, byName };
   }, [prefs.colors, subjects]);
 
+  /** Resolves the effective color for a subject. */
   function resolveColor(name?: string | null, id?: string | null) {
     return (
       (id ? subjectColors.byId.get(id) : undefined) ??
@@ -206,6 +213,7 @@ export function Calendar() {
     [tasks],
   );
 
+  /** Moves the calendar to another month. */
   function shiftMonth(delta: number) {
     setMonth(
       (current) =>
@@ -213,6 +221,7 @@ export function Calendar() {
     );
   }
 
+  /** Saves a custom color for one subject. */
   function setSubjectColor(id: string, color: string) {
     setPrefs((current) => ({
       ...current,
@@ -220,6 +229,7 @@ export function Calendar() {
     }));
   }
 
+  /** Removes a custom color for one subject. */
   function clearSubjectColor(id: string) {
     setPrefs((current) => {
       const colors = { ...current.colors };

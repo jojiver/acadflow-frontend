@@ -80,6 +80,7 @@ const OUTCOMES = [
   },
 ];
 
+/** Renders the FeaturesPage component. */
 export function FeaturesPage() {
   return (
     <>

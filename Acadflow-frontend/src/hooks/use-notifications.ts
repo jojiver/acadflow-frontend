@@ -5,12 +5,14 @@ import { getPreferencesService } from "@/services/settings-service";
 import type { Preferences } from "@/services/settings-service";
 import { getTasksService } from "@/services/task-service";
 
+/** Provides shared notification items and loading state. */
 export function useNotifications() {
   const [tasks, setTasks] = useState<Task[] | null>(null);
   const [preferences, setPreferences] = useState<Preferences | null>(null);
   const [reload, setReload] = useState(0);
 
   useEffect(() => {
+    /** Reloads notifications after preferences change. */
     function handleRefresh() {
       setReload((value) => value + 1);
     }

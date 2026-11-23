@@ -7,6 +7,7 @@ const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const OFFSET = 2;
 const DAYS_IN_MONTH = 31;
 
+/** Renders the ScheduleMonth component. */
 export function ScheduleMonth({ classes }: { classes: ScheduleClass[] }) {
   const counts = new Map<string, number>();
   for (const item of classes) {

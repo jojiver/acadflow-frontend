@@ -17,6 +17,7 @@ type ProgressBarProps = {
   className?: string;
 };
 
+/** Renders the ProgressBar component. */
 export function ProgressBar({
   value,
   tone = "emerald",

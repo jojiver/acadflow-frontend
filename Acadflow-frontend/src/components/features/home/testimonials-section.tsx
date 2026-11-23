@@ -21,6 +21,7 @@ const QUOTES = [
   },
 ];
 
+/** Renders the TestimonialsSection component. */
 export function TestimonialsSection() {
   return (
     <section id="testimonials" className="bg-canvas py-20">

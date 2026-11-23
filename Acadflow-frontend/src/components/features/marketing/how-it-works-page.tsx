@@ -32,6 +32,7 @@ const RESULTS = [
   "Progress tracking you can actually see",
 ];
 
+/** Renders the HowItWorksPage component. */
 export function HowItWorksPage() {
   return (
     <>

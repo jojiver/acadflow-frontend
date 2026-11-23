@@ -19,6 +19,7 @@ import { UploadCard } from "./upload-card";
 
 type StepState = "done" | "active" | "todo";
 
+/** Renders the ScheduleImport component. */
 export function ScheduleImport() {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
@@ -33,6 +34,7 @@ export function ScheduleImport() {
   const conflicts =
     rows?.filter((row) => row.conflict).length ?? summary?.conflicts ?? 0;
 
+  /** Uploads a timetable and loads the import preview. */
   async function handleFile(nextFile: File) {
     setFile(nextFile);
     setRows(null);
@@ -54,10 +56,12 @@ export function ScheduleImport() {
     }
   }
 
+  /** Shows an upload rejection message. */
   function handleReject(message: string) {
     setUploadError(message);
   }
 
+  /** Clears the import state and selected file. */
   function handleReset() {
     setFile(null);
     setRows(null);
@@ -67,6 +71,7 @@ export function ScheduleImport() {
     setConfirmError("");
   }
 
+  /** Toggles selection of one imported class. */
   function toggleRow(id: string) {
     setRows((current) =>
       current?.map((row) =>
@@ -75,12 +80,14 @@ export function ScheduleImport() {
     );
   }
 
+  /** Selects or deselects all imported classes. */
   function toggleAll(selected: boolean) {
     setRows((current) =>
       current?.map((row) => ({ ...row, selected })) ?? current,
     );
   }
 
+  /** Updates the subject text of one imported class. */
   function updateSubject(id: string, subject: string) {
     setRows((current) =>
       current?.map((row) => (row.id === id ? { ...row, subject } : row)) ??
@@ -88,6 +95,7 @@ export function ScheduleImport() {
     );
   }
 
+  /** Handles handle confirm in schedule-import.tsx. */
   async function handleConfirm() {
     if (!rows || selectedCount === 0) {
       setConfirmError("Select at least one class to import.");

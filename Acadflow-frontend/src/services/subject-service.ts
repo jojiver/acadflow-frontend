@@ -25,11 +25,13 @@ export type SubjectInput = {
   category: SubjectCategory;
 };
 
+/** Fetches all subjects for the current user. */
 export async function getSubjectsService(): Promise<Subject[]> {
   const response = await http.get("/subjects/v1/get-subjects");
   return response.data.data.subjects as Subject[];
 }
 
+/** Creates a subject through the API. */
 export async function createSubjectService(
   input: SubjectInput,
 ): Promise<Subject> {
@@ -37,6 +39,7 @@ export async function createSubjectService(
   return response.data.data.subject as Subject;
 }
 
+/** Updates a subject through the API. */
 export async function updateSubjectService(
   id: string,
   input: SubjectInput,
@@ -45,6 +48,7 @@ export async function updateSubjectService(
   return response.data.data.subject as Subject;
 }
 
+/** Deletes a subject through the API. */
 export async function deleteSubjectService(id: string): Promise<void> {
   await http.post(`/subjects/v1/delete-subject/${id}`, {});
 }

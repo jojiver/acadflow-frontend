@@ -18,6 +18,7 @@ const STEPS = [
   },
 ];
 
+/** Renders the HowItWorksSection component. */
 export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="bg-canvas py-20">

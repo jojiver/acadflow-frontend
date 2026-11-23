@@ -9,14 +9,17 @@ import type { Task } from "@/lib/priority";
 
 const DAY_LABEL = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+/** Pads a number with a leading zero. */
 function pad(value: number) {
   return String(value).padStart(2, "0");
 }
 
+/** Formats a date as a local YYYY-MM-DD key. */
 function toKey(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
+/** Renders the Workload component. */
 export function Workload() {
   const [tasks, setTasks] = useState<Task[] | null>(null);
 
@@ -154,6 +157,7 @@ export function Workload() {
   );
 }
 
+/** Renders the Stat component. */
 function Stat({
   label,
   value,

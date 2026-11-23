@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { Tasks } from "@/components/features/tasks/tasks";
 import { Button } from "@/components/ui/button";
 
+/** Renders the TasksPage component. */
 export default function TasksPage() {
   const navigate = useNavigate();
 

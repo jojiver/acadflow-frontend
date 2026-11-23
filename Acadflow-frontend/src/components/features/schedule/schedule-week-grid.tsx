@@ -14,20 +14,24 @@ const DAY_META: Record<Weekday, { label: string; date: string }> = {
   Sat: { label: "SAT", date: "Oct 11" },
 };
 
+/** Converts a time string to minutes. */
 function toMinutes(time: string) {
   const [hours, minutes] = time.split(":").map(Number);
   return hours * 60 + minutes;
 }
 
+/** Pads a number with a leading zero. */
 function pad(value: number) {
   return String(value).padStart(2, "0");
 }
 
+/** Formats an hour for the schedule axis. */
 function formatHour(hour: number) {
   const suffix = hour >= 12 ? "PM" : "AM";
   return `${hour % 12 || 12}:00 ${suffix}`;
 }
 
+/** Formats a 24-hour time for display. */
 function formatTime(time: string) {
   const [hours, minutes] = time.split(":").map(Number);
   const suffix = hours >= 12 ? "PM" : "AM";
@@ -41,6 +45,7 @@ type ScheduleWeekGridProps = {
   onSelectClass?: (item: ScheduleClass) => void;
 };
 
+/** Renders the ScheduleWeekGrid component. */
 export function ScheduleWeekGrid({
   classes,
   days,

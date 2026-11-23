@@ -3,6 +3,7 @@ import { cn } from "@/lib/cn";
 
 type TagProps = { children: ReactNode; className?: string };
 
+/** Renders the Tag component. */
 export function Tag({ children, className }: TagProps) {
   return (
     <span

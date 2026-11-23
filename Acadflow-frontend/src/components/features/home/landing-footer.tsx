@@ -5,6 +5,7 @@ const COLUMNS = [
   { title: "Legal", links: ["Privacy", "Terms", "Security"] },
 ];
 
+/** Renders the LandingFooter component. */
 export function LandingFooter() {
   return (
     <footer className="bg-brand-dark pt-14 pb-8">

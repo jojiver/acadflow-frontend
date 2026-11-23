@@ -30,6 +30,7 @@ const TOGGLES = [
   { key: "workload", label: "Workload warnings" },
 ] as const;
 
+/** Renders the Settings component. */
 export function Settings() {
   const { user, refreshUser } = useAuth();
 
@@ -67,6 +68,7 @@ export function Settings() {
     };
   }, []);
 
+  /** Handles handle save in settings.tsx. */
   async function handleSave() {
     setBusy(true);
     setError("");
@@ -91,6 +93,7 @@ export function Settings() {
     }
   }
 
+  /** Handles handle password change in settings.tsx. */
   async function handlePasswordChange() {
     setPasswordError("");
     setPasswordSaved(false);

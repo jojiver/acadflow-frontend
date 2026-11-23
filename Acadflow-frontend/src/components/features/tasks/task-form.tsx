@@ -48,14 +48,17 @@ const IMPORTANCE_TONE = {
   High: "high",
 } as const;
 
+/** Pads a number with a leading zero. */
 function pad(value: number) {
   return String(value).padStart(2, "0");
 }
 
+/** Formats a deadline for a datetime-local input. */
 function toLocalValue(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+/** Returns the default task deadline. */
 function defaultDeadline() {
   const date = new Date();
   date.setDate(date.getDate() + 7);
@@ -63,6 +66,7 @@ function defaultDeadline() {
   return toLocalValue(date);
 }
 
+/** Renders the Field component. */
 function Field({
   label,
   htmlFor,
@@ -137,6 +141,7 @@ type TaskFormProps = {
   onDelete?: () => void;
 };
 
+/** Renders the TaskForm component. */
 export function TaskForm({
   heading,
   description,
@@ -199,11 +204,13 @@ export function TaskForm({
   const stepsDone = steps.filter((step) => step.done).length;
   const stepsProgress = steps.length > 0 ? progressFromSteps(steps) : 0;
 
+  /** Updates form state after checklist changes. */
   function applySteps(next: TaskStep[]) {
     setSteps(next);
     if (next.length > 0) setProgress(progressFromSteps(next));
   }
 
+  /** Adds an empty checklist step. */
   function addStep() {
     const label = newStep.trim();
     if (!label) return;
@@ -211,6 +218,7 @@ export function TaskForm({
     setNewStep("");
   }
 
+  /** Toggles one checklist step. */
   function toggleStep(stepId: string) {
     applySteps(
       steps.map((step) =>
@@ -219,10 +227,12 @@ export function TaskForm({
     );
   }
 
+  /** Removes one checklist step. */
   function removeStep(stepId: string) {
     applySteps(steps.filter((step) => step.id !== stepId));
   }
 
+  /** Handles form submission, validation and errors. */
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 

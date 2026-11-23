@@ -10,6 +10,7 @@ const base = {
   "aria-hidden": true,
 };
 
+/** Renders the Dashboard icon. */
 export function DashboardIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -21,6 +22,7 @@ export function DashboardIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Schedule icon. */
 export function ScheduleIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -31,6 +33,7 @@ export function ScheduleIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Subjects icon. */
 export function SubjectsIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -40,6 +43,7 @@ export function SubjectsIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Tasks icon. */
 export function TasksIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -49,6 +53,7 @@ export function TasksIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Productivity icon. */
 export function ProductivityIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -57,6 +62,7 @@ export function ProductivityIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Calendar icon. */
 export function CalendarIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -66,6 +72,7 @@ export function CalendarIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Workload icon. */
 export function WorkloadIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -75,6 +82,7 @@ export function WorkloadIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Bell icon. */
 export function BellIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -84,6 +92,7 @@ export function BellIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Settings icon. */
 export function SettingsIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -93,6 +102,7 @@ export function SettingsIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the Profile icon. */
 export function ProfileIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -102,6 +112,7 @@ export function ProfileIcon({ className = "size-4" }: IconProps) {
   );
 }
 
+/** Renders the LogOut icon. */
 export function LogOutIcon({ className = "size-4" }: IconProps) {
   return (
     <svg {...base} className={className}>

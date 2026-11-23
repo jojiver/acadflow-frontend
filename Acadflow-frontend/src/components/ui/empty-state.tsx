@@ -9,6 +9,7 @@ type EmptyStateProps = {
   className?: string;
 };
 
+/** Renders the EmptyState component. */
 export function EmptyState({
   title,
   description,

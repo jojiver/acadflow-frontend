@@ -5,6 +5,7 @@ const STATS: [string, string][] = [
   ["2 formats", "PDF and image import"],
 ];
 
+/** Renders the StatsSection component. */
 export function StatsSection() {
   return (
     <section className="bg-canvas pb-6">

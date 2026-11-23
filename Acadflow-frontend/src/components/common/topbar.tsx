@@ -18,6 +18,7 @@ type SearchResult = {
   path: string;
 };
 
+/** Returns the topbar title and subtitle for a route. */
 function getPageMeta(pathname: string): PageMeta {
   if (pathname === "/user") {
     return {
@@ -111,6 +112,7 @@ function getPageMeta(pathname: string): PageMeta {
   };
 }
 
+/** Builds avatar initials from a name. */
 function getInitials(name?: string) {
   if (!name) return "JS";
   return name
@@ -122,6 +124,7 @@ function getInitials(name?: string) {
     .toUpperCase();
 }
 
+/** Renders the Search icon. */
 function SearchIcon() {
   return (
     <svg
@@ -138,6 +141,7 @@ function SearchIcon() {
   );
 }
 
+/** Renders the Bell icon. */
 function BellIcon() {
   return (
     <svg
@@ -154,6 +158,7 @@ function BellIcon() {
   );
 }
 
+/** Renders the Topbar component. */
 export function Topbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -172,6 +177,7 @@ export function Topbar() {
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    /** Closes the search dropdown on an outside click. */
     function handleClick(event: MouseEvent) {
       if (
         searchRef.current &&
@@ -186,6 +192,7 @@ export function Topbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  /** Loads tasks and subjects for global search. */
   async function loadSearchData() {
     if (loading || data) return;
 
@@ -243,6 +250,7 @@ export function Topbar() {
     return [...taskResults, ...subjectResults];
   }, [query, data]);
 
+  /** Navigates to a selected search result. */
   function goToResult(result: SearchResult) {
     navigate(result.path);
     setQuery("");

@@ -18,6 +18,7 @@ export type NotificationPreferences = {
   workload: boolean;
 };
 
+/** Builds notification items from task state and preferences. */
 export function buildNotifications(
   tasks: Task[],
   preferences?: NotificationPreferences,

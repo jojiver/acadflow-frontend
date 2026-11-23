@@ -22,6 +22,7 @@ type SubjectFormProps = {
   onSubmit: (input: SubjectInput) => void;
 };
 
+/** Renders the SubjectForm component. */
 export function SubjectForm({
   open,
   initial,
@@ -38,6 +39,7 @@ export function SubjectForm({
     initial?.category ?? "Core",
   );
 
+  /** Handles form submission, validation and errors. */
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     onSubmit({

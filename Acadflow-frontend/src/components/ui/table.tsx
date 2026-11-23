@@ -1,6 +1,7 @@
 import type { TableHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
+/** Renders the Table component. */
 export function Table({
   className,
   ...props

@@ -14,6 +14,7 @@ import {
 import type { TaskInput } from "@/services/task-service";
 import { TaskForm } from "./task-form";
 
+/** Renders the TaskEdit component. */
 export function TaskEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export function TaskEdit() {
     };
   }, [id]);
 
+  /** Handles form submission, validation and errors. */
   async function handleSubmit(input: TaskInput) {
     if (!id) return;
 
@@ -56,6 +58,7 @@ export function TaskEdit() {
     }
   }
 
+  /** Handles handle delete in task-edit.tsx. */
   async function handleDelete() {
     if (!id) return;
 

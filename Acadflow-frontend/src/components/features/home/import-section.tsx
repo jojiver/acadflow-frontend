@@ -4,6 +4,7 @@ const BULLETS = [
   "Nothing to type in by hand",
 ];
 
+/** Renders the ImportSection component. */
 export function ImportSection() {
   return (
     <section id="import" className="bg-brand-tint py-20">

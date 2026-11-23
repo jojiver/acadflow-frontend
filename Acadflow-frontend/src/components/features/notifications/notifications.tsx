@@ -20,6 +20,7 @@ const TOGGLES = [
   { key: "workload", label: "Workload warnings" },
 ] as const;
 
+/** Renders the Notifications component. */
 export function Notifications() {
   const { items, loading } = useNotifications();
   const [preferences, setPreferences] =
@@ -42,6 +43,7 @@ export function Notifications() {
     };
   }, []);
 
+  /** Saves notification preferences and refreshes alerts. */
   function savePreferences(next: Preferences) {
     const previous = preferences;
     setPreferences(next);

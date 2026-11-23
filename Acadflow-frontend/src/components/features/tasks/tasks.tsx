@@ -24,6 +24,7 @@ export function Tasks() {
         if (active) setTasks([]);
       });
 
+    /** Marks an async effect as inactive on unmount. */
     function cleanup() {
       active = false;
     }

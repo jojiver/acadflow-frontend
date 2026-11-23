@@ -7,6 +7,7 @@ const FEATURES = [
   "Smart study slots found in your free time",
 ];
 
+/** Renders the AuthBrandPanel component. */
 export function AuthBrandPanel() {
   return (
     <aside className="relative hidden overflow-hidden bg-[linear-gradient(114deg,#0E273D_0%,#273444_100%)] px-16 py-16 lg:flex lg:w-[620px] lg:shrink-0 lg:flex-col lg:justify-between">

@@ -16,6 +16,7 @@ type View = (typeof VIEWS)[number];
 
 const WEEK: Weekday[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+/** Renders the Schedule component. */
 export function Schedule() {
   const navigate = useNavigate();
   const [view, setView] = useState<View>("Week");

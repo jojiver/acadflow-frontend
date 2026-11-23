@@ -18,6 +18,7 @@ import {
 } from "@/services/task-service";
 import type { TaskInput } from "@/services/task-service";
 
+/** Maps a task into an editable API payload. */
 function toInput(task: Task): TaskInput {
   return {
     title: task.title,
@@ -37,6 +38,7 @@ function toInput(task: Task): TaskInput {
 const LEVEL_VARIANT = { High: "high", Medium: "medium", Low: "low" } as const;
 const TONE = { High: "rose", Medium: "amber", Low: "emerald" } as const;
 
+/** Renders the TaskDetail component. */
 export function TaskDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -65,6 +67,7 @@ export function TaskDetail() {
     };
   }, [id]);
 
+  /** Handles handle delete in task-detail.tsx. */
   async function handleDelete() {
     if (!id) return;
 
@@ -79,6 +82,7 @@ export function TaskDetail() {
     }
   }
 
+  /** Handles save steps in task-detail.tsx. */
   async function saveSteps(nextSteps: TaskStep[]) {
     if (!id || !task) return;
 
@@ -106,6 +110,7 @@ export function TaskDetail() {
     }
   }
 
+  /** Toggles one checklist step. */
   function toggleStep(stepId: string) {
     if (!task?.steps) return;
     saveSteps(
@@ -115,6 +120,7 @@ export function TaskDetail() {
     );
   }
 
+  /** Marks every checklist step as done. */
   function completeAllSteps() {
     if (!task?.steps) return;
     saveSteps(task.steps.map((step) => ({ ...step, done: true })));

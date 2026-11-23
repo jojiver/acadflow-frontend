@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+/** Extracts a readable error message from an API error. */
 function getErrorMessage(error: unknown) {
   if (typeof error === "object" && error !== null && "response" in error) {
     const response = (error as { response?: { data?: { message?: string } } })
@@ -14,6 +15,7 @@ function getErrorMessage(error: unknown) {
   return "Could not connect to the API. Check that the API server is running.";
 }
 
+/** Renders the LoginForm component. */
 export function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  /** Handles form submission, validation and errors. */
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");

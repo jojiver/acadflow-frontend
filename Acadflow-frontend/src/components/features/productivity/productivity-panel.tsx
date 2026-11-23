@@ -14,6 +14,7 @@ const OPTIONS: { value: ProductivityPeriod; label: string }[] = [
   { value: "month", label: "This Month" },
 ];
 
+/** Renders the ProductivityPanel component. */
 export function ProductivityPanel() {
   const [period, setPeriod] = useState<ProductivityPeriod>("week");
   const [stats, setStats] = useState<Productivity | null>(null);
@@ -80,6 +81,7 @@ export function ProductivityPanel() {
   );
 }
 
+/** Renders the Stat component. */
 function Stat({
   label,
   value,

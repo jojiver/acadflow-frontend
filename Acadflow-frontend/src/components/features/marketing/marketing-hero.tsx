@@ -12,6 +12,7 @@ type MarketingHeroProps = {
   secondaryTo?: string;
 };
 
+/** Renders the MarketingHero component. */
 export function MarketingHero({
   eyebrow,
   title,

@@ -41,6 +41,7 @@ const CONTROLS = [
   },
 ];
 
+/** Renders the ImportPage component. */
 export function ImportPage() {
   return (
     <>

@@ -5,6 +5,7 @@ type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   error?: string;
 };
 
+/** Renders the Select component. */
 export function Select({ className, error, children, ...props }: SelectProps) {
   return (
     <div>

@@ -14,6 +14,7 @@ type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
   variant?: BadgeVariant;
 };
 
+/** Renders the Badge component. */
 export function Badge({
   className,
   variant = "default",

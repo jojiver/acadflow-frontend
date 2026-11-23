@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import { Sidebar } from "@/components/common/sidebar";
 import { Topbar } from "@/components/common/topbar";
 
+/** Renders the UserLayout component. */
 export default function UserLayout() {
   return (
     <div className="flex min-h-svh bg-canvas text-ink">

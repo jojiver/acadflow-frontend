@@ -18,6 +18,7 @@ type ReviewCardProps = {
   onSubjectChange: (id: string, subject: string) => void;
 };
 
+/** Renders the ReviewCard component. */
 export function ReviewCard({
   rows,
   fileName,

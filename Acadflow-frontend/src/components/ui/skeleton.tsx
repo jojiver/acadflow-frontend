@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
+/** Renders the Skeleton component. */
 export function Skeleton({
   className,
   ...props
@@ -13,6 +14,7 @@ export function Skeleton({
   );
 }
 
+/** Renders the SkeletonButton component. */
 export function SkeletonButton({
   className,
   size = "md",

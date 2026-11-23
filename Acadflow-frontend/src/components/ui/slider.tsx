@@ -11,6 +11,7 @@ type SliderProps = Omit<
   showValue?: boolean;
 };
 
+/** Renders the Slider component. */
 export function Slider({
   value,
   onValueChange,

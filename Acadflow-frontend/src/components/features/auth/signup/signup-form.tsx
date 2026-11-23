@@ -10,6 +10,7 @@ const PROGRAMS = ["BSIT", "BSCS", "BSIS", "Other"];
 
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
+/** Extracts a readable error message from an API error. */
 function getErrorMessage(error: unknown) {
   if (typeof error === "object" && error !== null && "response" in error) {
     const response = (error as { response?: { data?: { message?: string } } })
@@ -19,6 +20,7 @@ function getErrorMessage(error: unknown) {
   return "Could not connect to the API. Check that the API server is running.";
 }
 
+/** Renders the SignupForm component. */
 export function SignupForm() {
   const { signup } = useAuth();
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ export function SignupForm() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  /** Handles form submission, validation and errors. */
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");

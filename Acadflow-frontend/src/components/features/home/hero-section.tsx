@@ -2,9 +2,11 @@ import { useNavigate } from "react-router";
 import dashboardPreview from "@/assets/dashboard-preview.png";
 import { Button } from "@/components/ui/button";
 
+/** Renders the HeroSection component. */
 export function HeroSection() {
   const navigate = useNavigate();
 
+  /** Scrolls the landing page to the how-it-works section. */
   function scrollToHowItWorks() {
     document
       .getElementById("how-it-works")

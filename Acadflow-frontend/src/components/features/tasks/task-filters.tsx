@@ -10,6 +10,7 @@ type TaskFiltersProps = {
   onChange: (value: PriorityFilter) => void;
 };
 
+/** Renders the TaskFilters component. */
 export function TaskFilters({ value, counts, onChange }: TaskFiltersProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">

@@ -7,6 +7,7 @@ type ApiError = {
   };
 };
 
+/** Extracts a readable error message from an API error. */
 export function getErrorMessage(error: unknown) {
   if (typeof error === "object" && error !== null && "response" in error) {
     const response = (error as ApiError).response;

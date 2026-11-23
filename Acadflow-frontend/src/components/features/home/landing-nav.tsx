@@ -9,6 +9,7 @@ const LINKS = [
   { to: "/testimonials", label: "Testimonials" },
 ];
 
+/** Renders the LandingNav component. */
 export function LandingNav() {
   const navigate = useNavigate();
 

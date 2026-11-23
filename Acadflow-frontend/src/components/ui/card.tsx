@@ -3,6 +3,7 @@ import { cn } from "@/lib/cn";
 
 type CardProps = { children: ReactNode; className?: string };
 
+/** Renders the Card component. */
 export function Card({ children, className }: CardProps) {
   return (
     <div

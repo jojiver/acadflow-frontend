@@ -71,6 +71,7 @@ export type ScheduleInput = {
   room?: string;
 };
 
+/** Fetches the schedule list from the API. */
 export async function getScheduleService(): Promise<ScheduleClass[]> {
   const response = await http.get("/schedules/v1/get-schedules");
   return (response.data.data.schedules as ApiSchedule[]).map((item) => ({
@@ -84,11 +85,13 @@ export async function getScheduleService(): Promise<ScheduleClass[]> {
   }));
 }
 
+/** Creates a class schedule through the API. */
 export async function createScheduleService(input: ScheduleInput) {
   const response = await http.post("/schedules/v1/create-schedule", input);
   return response.data.data.schedule as { id: string };
 }
 
+/** Updates a class schedule through the API. */
 export async function updateScheduleService(
   id: string,
   input: ScheduleInput,
@@ -97,10 +100,12 @@ export async function updateScheduleService(
   return response.data.data.schedule as { id: string };
 }
 
+/** Deletes a class schedule through the API. */
 export async function deleteScheduleService(id: string): Promise<void> {
   await http.post(`/schedules/v1/delete-schedule/${id}`, {});
 }
 
+/** Uploads a timetable and returns the import preview. */
 export async function previewScheduleImportService(
   file: File,
 ): Promise<ImportPreviewResult> {
@@ -114,6 +119,7 @@ export async function previewScheduleImportService(
   return response.data.data as ImportPreviewResult;
 }
 
+/** Saves the selected imported classes. */
 export async function confirmScheduleImportService(
   classes: ImportedClass[],
 ): Promise<ImportConfirmResult> {

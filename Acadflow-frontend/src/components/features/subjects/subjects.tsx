@@ -53,6 +53,7 @@ const SORTS = [
 
 type SortKey = (typeof SORTS)[number]["value"];
 
+/** Renders the Subjects component. */
 export function Subjects() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") ?? "").trim().toLowerCase();
@@ -66,6 +67,7 @@ export function Subjects() {
   const [error, setError] = useState("");
   const [formError, setFormError] = useState("");
 
+  /** Handles load in subjects.tsx. */
   async function load() {
     const result = await getSubjectsService();
     setSubjects(result);
@@ -82,6 +84,7 @@ export function Subjects() {
         if (active) setSubjects([]);
       });
 
+    /** Marks an async effect as inactive on unmount. */
     function cleanup() {
       active = false;
     }
@@ -175,18 +178,21 @@ export function Subjects() {
   ).length;
   const noUpcoming = active.filter((item) => item.dueNow === 0).length;
 
+  /** Opens the subject form in create mode. */
   function openCreate() {
     setEditing(null);
     setFormError("");
     setFormOpen(true);
   }
 
+  /** Opens the subject form in edit mode. */
   function openEdit(subject: Subject) {
     setEditing(subject);
     setFormError("");
     setFormOpen(true);
   }
 
+  /** Handles handle save in subjects.tsx. */
   async function handleSave(input: SubjectInput) {
     setBusy(true);
     setFormError("");
@@ -206,6 +212,7 @@ export function Subjects() {
     }
   }
 
+  /** Handles handle delete in subjects.tsx. */
   async function handleDelete(id: string) {
     setBusy(true);
     setError("");
@@ -491,6 +498,7 @@ export function Subjects() {
   );
 }
 
+/** Renders the Pencil icon. */
 function PencilIcon() {
   return (
     <svg
@@ -507,6 +515,7 @@ function PencilIcon() {
   );
 }
 
+/** Renders the Trash icon. */
 function TrashIcon() {
   return (
     <svg
@@ -526,6 +535,7 @@ function TrashIcon() {
   );
 }
 
+/** Renders the LegendRow component. */
 function LegendRow({
   dot,
   label,

@@ -8,6 +8,7 @@ type ModalProps = {
   children: ReactNode;
 };
 
+/** Renders the Modal component. */
 export function Modal({ open, onClose, title, children }: ModalProps) {
   if (!open) return null;
 
